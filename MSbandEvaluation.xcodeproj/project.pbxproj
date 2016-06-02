@@ -22,6 +22,7 @@
 		4500F26B1CB6988600DE6F77 /* MicrosoftBandKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F26A1CB6988600DE6F77 /* MicrosoftBandKit_iOS.framework */; };
 		4500F26D1CB698C700DE6F77 /* MSBSensorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F26C1CB698C700DE6F77 /* MSBSensorService.swift */; };
 		4500F2731CB6A32F00DE6F77 /* MSBEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F2721CB6A32F00DE6F77 /* MSBEvents.swift */; };
+		450ECB851D00A0D500F5908A /* HRVHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450ECB841D00A0D500F5908A /* HRVHelpers.swift */; };
 		4540C0101CB51DD400EDF688 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4540C00F1CB51DD400EDF688 /* AppDelegate.swift */; };
 		4540C0121CB51DD400EDF688 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4540C0111CB51DD400EDF688 /* ViewController.swift */; };
 		4540C0151CB51DD400EDF688 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4540C0131CB51DD400EDF688 /* Main.storyboard */; };
@@ -146,6 +147,7 @@
 		4500F26C1CB698C700DE6F77 /* MSBSensorService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSBSensorService.swift; sourceTree = "<group>"; };
 		4500F26E1CB69AA300DE6F77 /* MSBSensorService-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MSBSensorService-Bridging-Header.h"; sourceTree = "<group>"; };
 		4500F2721CB6A32F00DE6F77 /* MSBEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSBEvents.swift; sourceTree = "<group>"; };
+		450ECB841D00A0D500F5908A /* HRVHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HRVHelpers.swift; sourceTree = "<group>"; };
 		4540C00C1CB51DD400EDF688 /* MSbandEvaluation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MSbandEvaluation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4540C00F1CB51DD400EDF688 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4540C0111CB51DD400EDF688 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -352,6 +354,7 @@
 				4500F2601CB527F900DE6F77 /* PeriphalEvents.swift */,
 				45E8A76C1CB82E0E00FB0080 /* SensorEvaluationShared.h */,
 				45E8A76E1CB82E0E00FB0080 /* Info.plist */,
+				450ECB841D00A0D500F5908A /* HRVHelpers.swift */,
 			);
 			path = SensorEvaluationShared;
 			sourceTree = "<group>";
@@ -730,6 +733,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45E8A7881CB82E4A00FB0080 /* Events.swift in Sources */,
+				450ECB851D00A0D500F5908A /* HRVHelpers.swift in Sources */,
 				45E8A7871CB82E4200FB0080 /* PeriphalEvents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

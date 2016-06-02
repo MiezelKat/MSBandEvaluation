@@ -49,16 +49,16 @@ class DataStorage : NSObject{
     
     func writeToDisk(){
         let now = NSDate()
-        //let polarRRFile = getDocumentsDirectory().stringByAppendingPathComponent("polarRR\(now.description).csv")
-        //let polarHRFile = getDocumentsDirectory().stringByAppendingPathComponent("polarHR\(now.description).csv")
+        let polarRRFile = getDocumentsDirectory().stringByAppendingPathComponent("polarRR-\(now.description).csv")
+        let polarHRFile = getDocumentsDirectory().stringByAppendingPathComponent("polarHR-\(now.description).csv")
         
         // folder:
-        let polarRRFile = getDocumentsDirectory().stringByAppendingPathComponent("\(now.description)/polarRR.csv")
-        let polarHRFile = getDocumentsDirectory().stringByAppendingPathComponent("\(now.description)/polarHR.csv")
+        //let polarRRFile = getDocumentsDirectory().stringByAppendingPathComponent("\(now.description)/polarRR.csv")
+        //let polarHRFile = getDocumentsDirectory().stringByAppendingPathComponent("\(now.description)/polarHR.csv")
         
-        //let msbRRFile = getDocumentsDirectory().stringByAppendingPathComponent("msbRR.csv")
-        //let msbHRFile = getDocumentsDirectory().stringByAppendingPathComponent("msbHR.csv")
-        //let msbGSRFile = getDocumentsDirectory().stringByAppendingPathComponent("msbGSR.csv")
+        let msbRRFile = getDocumentsDirectory().stringByAppendingPathComponent("msbRR-\(now.description).csv")
+        let msbHRFile = getDocumentsDirectory().stringByAppendingPathComponent("msbHR-\(now.description).csv")
+        let msbGSRFile = getDocumentsDirectory().stringByAppendingPathComponent("msbGSR-\(now.description).csv")
         
         var polarRRData  = "Time,TimeLong,rr \n"
         var polarHRData  = "Time,TimeLong,hr \n"
@@ -72,15 +72,47 @@ class DataStorage : NSObject{
         }
         
         do{
-            try polarRRData.writeToURL(NSURL(fileURLWithPath: polarRRFile), atomically: true, encoding: NSUTF8StringEncoding)
-        }catch{
-            print("error")
+            try polarRRData.writeToFile(polarRRFile, atomically: true, encoding: NSUTF8StringEncoding)
+        }catch let error as NSError{
+            print(error.description)
         }
         
         do{
-            try polarHRData.writeToURL(NSURL(fileURLWithPath: polarHRFile), atomically: true, encoding: NSUTF8StringEncoding)
-        }catch{
-        print("error")
+            try polarHRData.writeToFile(polarHRFile, atomically: true, encoding: NSUTF8StringEncoding)
+        }catch let error as NSError{
+            print(error.description)
+        }
+        
+        var msbRRData  = "Time,TimeLong,rr \n"
+        var msbHRData  = "Time,TimeLong,hr \n"
+        var msbGSRData = "time,TimeLong,gsr \n"
+        
+        for dataP in msbDataPoints{
+            if(dataP.type == MSBEventType.rrChanged){
+                msbRRData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.newValue!.description)\n")
+            }else if(dataP.type == MSBEventType.hrChanged){
+                msbHRData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.newValue!.description)\n")
+            }else if(dataP.type == MSBEventType.gsrChanged){
+                msbGSRData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.newValue!.description)\n")
+            }
+        }
+        
+        do{
+            try msbRRData.writeToFile(msbRRFile, atomically: true, encoding: NSUTF8StringEncoding)
+        }catch let error as NSError{
+            print(error.description)
+        }
+        
+        do{
+            try msbHRData.writeToFile(msbHRFile, atomically: true, encoding: NSUTF8StringEncoding)
+        }catch let error as NSError{
+            print(error.description)
+        }
+        
+        do{
+            try msbGSRData.writeToFile(msbGSRFile, atomically: true, encoding: NSUTF8StringEncoding)
+        }catch let error as NSError{
+            print(error.description)
         }
 
     }
