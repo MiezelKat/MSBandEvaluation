@@ -284,9 +284,8 @@
 		4540C0031CB51DD400EDF688 = {
 			isa = PBXGroup;
 			children = (
-				45E8A7621CB7E00E00FB0080 /* CoreBluetooth.framework */,
+				466DB9D71D47AA4B00E46F5D /* Frameworks */,
 				45E8A76B1CB82E0E00FB0080 /* SensorEvaluationShared */,
-				4500F26A1CB6988600DE6F77 /* MicrosoftBandKit_iOS.framework */,
 				4500F2411CB5265200DE6F77 /* MSBandSensorService */,
 				4500F21F1CB5263200DE6F77 /* PolarHRService */,
 				4540C00E1CB51DD400EDF688 /* MSbandEvaluation */,
@@ -357,6 +356,15 @@
 				450ECB841D00A0D500F5908A /* HRVHelpers.swift */,
 			);
 			path = SensorEvaluationShared;
+			sourceTree = "<group>";
+		};
+		466DB9D71D47AA4B00E46F5D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				45E8A7621CB7E00E00FB0080 /* CoreBluetooth.framework */,
+				4500F26A1CB6988600DE6F77 /* MicrosoftBandKit_iOS.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

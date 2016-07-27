@@ -33,6 +33,8 @@ class DataStorage : NSObject{
     
     private var msbDataPoints : [MSBEventData] = [MSBEventData]()
     
+    private var markerTimestamps : [NSDate] = [NSDate]()
+    
     func reset(){
         polarDataPoints.removeAll()
         msbDataPoints.removeAll()
@@ -46,6 +48,9 @@ class DataStorage : NSObject{
         msbDataPoints.append(data)
     }
 
+    func appendMarkerTimestamp(){
+        markerTimestamps.append(NSDate())
+    }
     
     func writeToDisk(){
         let now = NSDate()
@@ -60,8 +65,11 @@ class DataStorage : NSObject{
         let msbHRFile = getDocumentsDirectory().stringByAppendingPathComponent("msbHR-\(now.description).csv")
         let msbGSRFile = getDocumentsDirectory().stringByAppendingPathComponent("msbGSR-\(now.description).csv")
         
+        let markerFile = getDocumentsDirectory().stringByAppendingPathComponent("markers-\(now.description).csv")
+        
         var polarRRData  = "Time,TimeLong,rr \n"
         var polarHRData  = "Time,TimeLong,hr \n"
+        
         
         for dataP in polarDataPoints{
             if(dataP.type == PolarEventType.rrChanged){
@@ -97,6 +105,12 @@ class DataStorage : NSObject{
             }
         }
         
+        var markerData  = "Time,TimeLong\n"
+        
+        for dataP in markerTimestamps{
+            markerData.appendContentsOf("\(dataP.description),\(dataP.timeIntervalSince1970)\n")
+        }
+        
         do{
             try msbRRData.writeToFile(msbRRFile, atomically: true, encoding: NSUTF8StringEncoding)
         }catch let error as NSError{
@@ -111,6 +125,12 @@ class DataStorage : NSObject{
         
         do{
             try msbGSRData.writeToFile(msbGSRFile, atomically: true, encoding: NSUTF8StringEncoding)
+        }catch let error as NSError{
+            print(error.description)
+        }
+        
+        do{
+            try markerData.writeToFile(markerFile, atomically: true, encoding: NSUTF8StringEncoding)
         }catch let error as NSError{
             print(error.description)
         }
