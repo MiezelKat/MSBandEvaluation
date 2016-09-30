@@ -1,0 +1,3 @@
+[submodule "SensingKit-iOS"]
+	path = SensingKit-iOS
+	url = https://github.com/SensingKit/SensingKit-iOS.git
