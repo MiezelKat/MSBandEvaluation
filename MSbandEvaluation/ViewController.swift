@@ -359,11 +359,12 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
         
         switch event.type{
         case .hrChanged:
-            msbHROutputTextB.text = event.newValue?.description
+            msbHROutputTextB.text = event.printData()
         case .rrChanged:
-            msbRROutputTextB.text = event.newValue?.description
+            msbRROutputTextB.text = event.printData()
         case .gsrChanged:
-            msbGSROutputTextB.text = event.newValue?.description
+            msbGSROutputTextB.text = event.printData()
+        default:print("")
         }
         
         if(recordData){
