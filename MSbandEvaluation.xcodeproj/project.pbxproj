@@ -294,7 +294,6 @@
 		4540C0031CB51DD400EDF688 = {
 			isa = PBXGroup;
 			children = (
-				46299EFF1D4A452700DC640B /* icons */,
 				466DB9D71D47AA4B00E46F5D /* Frameworks */,
 				45E8A76B1CB82E0E00FB0080 /* SensorEvaluationShared */,
 				4500F2411CB5265200DE6F77 /* MSBandSensorService */,
@@ -367,18 +366,6 @@
 				450ECB841D00A0D500F5908A /* HRVHelpers.swift */,
 			);
 			path = SensorEvaluationShared;
-			sourceTree = "<group>";
-		};
-		46299EFF1D4A452700DC640B /* icons */ = {
-			isa = PBXGroup;
-			children = (
-				46299F001D4A453F00DC640B /* app_icon58.png */,
-				46299F011D4A453F00DC640B /* app_icon80.png */,
-				46299F021D4A453F00DC640B /* app_icon87.png */,
-				46299F031D4A453F00DC640B /* app_icon180.png */,
-				46299EFD1D4A42B100DC640B /* app_icon.png */,
-			);
-			name = icons;
 			sourceTree = "<group>";
 		};
 		466DB9D71D47AA4B00E46F5D /* Frameworks */ = {
