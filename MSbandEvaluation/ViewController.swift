@@ -62,11 +62,11 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
                 _polarEnabled = newVal
                 
                 if(_polarEnabled){
-                    connectPolarBtn.enabled = true
-                    polarTableRows.map({(e) -> Void in e.hidden = false })
+                    connectPolarBtn.isEnabled = true
+                    polarTableRows.map({(e) -> Void in e.isHidden = false })
                 }else{
-                    connectPolarBtn.enabled = false
-                    polarTableRows.map({(e) -> Void in e.hidden = true })
+                    connectPolarBtn.isEnabled = false
+                    polarTableRows.map({(e) -> Void in e.isHidden = true })
                 }
                 
                 checkRecordDataValid()
@@ -84,11 +84,11 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
                 _msbEnabled = newVal
                 
                 if(_msbEnabled){
-                    connectMSBandBtn.enabled = true
-                    msbTableRows.map({(e) -> Void in e.hidden = false })
+                    connectMSBandBtn.isEnabled = true
+                    msbTableRows.map({(e) -> Void in e.isHidden = false })
                 }else{
-                    connectMSBandBtn.enabled = false
-                    msbTableRows.map({(e) -> Void in e.hidden = true })
+                    connectMSBandBtn.isEnabled = false
+                    msbTableRows.map({(e) -> Void in e.isHidden = true })
                 }
                 
                 checkRecordDataValid()
@@ -135,7 +135,7 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
         }
     }
     
-    private func checkRecordDataValid(){
+    fileprivate func checkRecordDataValid(){
         var recordingCheck = false
         
         if(!polarConnected && !msbConnected){
@@ -149,11 +149,11 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
         }
         
         if(recordingCheck){
-            startRecordingBtn.enabled = true
-            recordDataTextB.textColor = UIColor.redColor()
+            startRecordingBtn.isEnabled = true
+            recordDataTextB.textColor = UIColor.red
         }else{
-            startRecordingBtn.enabled = false
-            recordDataTextB.textColor = UIColor.grayColor()
+            startRecordingBtn.isEnabled = false
+            recordDataTextB.textColor = UIColor.gray
         }
     }
     
@@ -169,18 +169,18 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
 //                    connectMSBandBtn.enabled = false
 //                    connectPolarBtn.enabled = false
                     
-                    startRecordingBtn.enabled = false
-                    stopRecordingBtn.enabled = true
+                    startRecordingBtn.isEnabled = false
+                    stopRecordingBtn.isEnabled = true
                     
-                    recordingTableRows.map({(e) -> Void in e.hidden = false })
+                    recordingTableRows.map({(e) -> Void in e.isHidden = false })
                 }else{
 //                    connectMSBandBtn.enabled = true
 //                    connectPolarBtn.enabled = true
                     
-                    startRecordingBtn.enabled = true
-                    stopRecordingBtn.enabled = false
+                    startRecordingBtn.isEnabled = true
+                    stopRecordingBtn.isEnabled = false
                     
-                    recordingTableRows.map({(e) -> Void in e.hidden = true })
+                    recordingTableRows.map({(e) -> Void in e.isHidden = true })
                 }
             }
         }
@@ -193,26 +193,26 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        MSBService.instance.subcribeToPeriphalEvents(self)
-        MSBService.instance.subcribeToMSBEvents(self)
+        MSBService.instance.subscribe(msbEventHandler: self)
+        MSBService.instance.subscribe(periphalEventHandler: self)
         
         PolarHRService.instance.subcribeToHREvents(self)
         PolarHRService.instance.subcribeToPeriphalEvents(self)
         
-        startRecordingBtn.enabled = false
+        startRecordingBtn.isEnabled = false
         
-        recordDataTextB.textColor = UIColor.grayColor()
+        recordDataTextB.textColor = UIColor.gray
         
-        stopRecordingBtn.enabled = false
+        stopRecordingBtn.isEnabled = false
         
-        recordingTableRows.map({(e) -> Void in e.hidden = true })
+        recordingTableRows.map({(e) -> Void in e.isHidden = true })
         
         // Do any additional setup after loading the view, typically from a nib.
         //self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(ViewController.addTapped))
     }
     
     func addTapped(){
-        let secondViewController = self.storyboard!.instantiateViewControllerWithIdentifier("ShareViewController") as! ShareViewController
+        let secondViewController = self.storyboard!.instantiateViewController(withIdentifier: "ShareViewController") as! ShareViewController
         
         self.navigationController!.pushViewController(secondViewController, animated: true)
     }
@@ -222,75 +222,75 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func polarEnabledValueChanged(sender: AnyObject) {
-        let enabled = (sender as! UISwitch).on
+    @IBAction func polarEnabledValueChanged(_ sender: AnyObject) {
+        let enabled = (sender as! UISwitch).isOn
         polarEnabled = enabled
         
     }
     
     
-    @IBAction func msbEnabledValueChanged(sender: AnyObject) {
-        let enabled = (sender as! UISwitch).on
+    @IBAction func msbEnabledValueChanged(_ sender: AnyObject) {
+        let enabled = (sender as! UISwitch).isOn
         msbEnabled = enabled
     }
     
 
-    @IBAction func connectPolarBtnEvent(sender: AnyObject) {
+    @IBAction func connectPolarBtnEvent(_ sender: AnyObject) {
         if(!polarConnected){
-            polarEnableSwitch.enabled = false
-            connectPolarBtn.enabled = false
+            polarEnableSwitch.isEnabled = false
+            connectPolarBtn.isEnabled = false
             PolarHRService.instance.connect()
         }
     }
 
-    @IBAction func connectMSBandBtnEvent(sender: AnyObject) {
+    @IBAction func connectMSBandBtnEvent(_ sender: AnyObject) {
         if(!msbConnected){
-            msbEnableSwitch.enabled = false
-            connectMSBandBtn.enabled = false
+            msbEnableSwitch.isEnabled = false
+            connectMSBandBtn.isEnabled = false
             MSBService.instance.connect()
         }
     }
     
     
     
-    @IBAction func startRecordingBtnEvent(sender: AnyObject) {
+    @IBAction func startRecordingBtnEvent(_ sender: AnyObject) {
         recordData = true
-        if !timer.valid {
-            let aSelector : Selector = "updateTime"
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: aSelector, userInfo: nil, repeats: true)
-            startTime = NSDate.timeIntervalSinceReferenceDate()
+        if !timer.isValid {
+            let aSelector : Selector = #selector(ViewController.updateTime)
+            timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: aSelector, userInfo: nil, repeats: true)
+            startTime = Date.timeIntervalSinceReferenceDate
         }
     }
     
-    @IBAction func stopRecodingBtnEvent(sender: AnyObject) {
+    @IBAction func stopRecodingBtnEvent(_ sender: AnyObject) {
         recordData = false
         DataStorage.sharedInstance.writeToDisk()
         DataStorage.sharedInstance.reset()
         timer.invalidate()
     }
     
-    var startTime = NSTimeInterval()
-    var timer = NSTimer()
+    var startTime = TimeInterval()
+    var timer = Timer()
     
     func updateTime() {
         
-        var currentTime = NSDate.timeIntervalSinceReferenceDate()
+        let currentTime = Date.timeIntervalSinceReferenceDate
         
         //Find the difference between current time and start time.
         
-        var elapsedTime: NSTimeInterval = currentTime - startTime
+        var elapsedTime: TimeInterval = currentTime - startTime
         
         //calculate the minutes in elapsed time.
         
         let minutes = UInt8(elapsedTime / 60.0)
         
-        elapsedTime -= (NSTimeInterval(minutes) * 60)
+        elapsedTime -= (TimeInterval(minutes) * 60)
         
         //calculate the seconds in elapsed time.
         
         let seconds = UInt8(elapsedTime)
         
-        elapsedTime -= NSTimeInterval(seconds)
+        elapsedTime -= TimeInterval(seconds)
         
         //find out the fraction of milliseconds to be displayed.
         
@@ -308,7 +308,7 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
         
     }
 
-    @IBAction func placeMarkerBtnEvent(sender: AnyObject) {
+    @IBAction func placeMarkerBtnEvent(_ sender: AnyObject) {
         DataStorage.sharedInstance.appendMarkerTimestamp()
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
     }
@@ -316,73 +316,73 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
     
     //MARK: PeriphalEventHandler
     
-    func handlePeriphalEvent(event : PeriphalChangedEventData){
+     public func handleEvent(withData data: PeriphalChangedEventData){
         
-        if(event.source == PeriphalSourceType.polarStrap){
+        if(data.source == PeriphalSourceType.polarStrap){
             
-            switch event.status{
+            switch data.status{
             case .discovering, .isConnecting:
                 print("polar discovering")
-                polarConnectionTextB.textColor = UIColor.orangeColor()
+                polarConnectionTextB.textColor = UIColor.orange
                 polarConnected = false
             case .isConnected:
                 print("polar connected")
-                polarConnectionTextB.textColor = UIColor.greenColor()
+                polarConnectionTextB.textColor = UIColor.green
                 polarConnected = true
             case .failedConnecting, .isDisconnected:
                 print("polar disconnected")
-                polarConnectionTextB.textColor = UIColor.redColor()
+                polarConnectionTextB.textColor = UIColor.red
                 polarConnected = false
             }
             
-        }else if (event.source == PeriphalSourceType.microsoftBand){
+        }else if (data.source == PeriphalSourceType.microsoftBand){
             
-            switch event.status{
+            switch data.status{
             case .discovering, .isConnecting:
                 print("msb discovering")
-                msbConnectionTextB.textColor = UIColor.orangeColor()
+                msbConnectionTextB.textColor = UIColor.orange
                 msbConnected = false
             case .isConnected:
                 print("msb connected")
-                msbConnectionTextB.textColor = UIColor.greenColor()
+                msbConnectionTextB.textColor = UIColor.green
                 msbConnected = true
             case .failedConnecting, .isDisconnected:
                 print("msb disconnected")
-                msbConnectionTextB.textColor = UIColor.redColor()
+                msbConnectionTextB.textColor = UIColor.red
                 msbConnected = false
             }
             
         }
     }
     
-    func handleMSBEvent(event: MSBEventData) {
+    public func handleEvent(withData data: MSBEventData) {
         
-        switch event.type{
+        switch data.type{
         case .hrChanged:
-            msbHROutputTextB.text = event.printData()
+            msbHROutputTextB.text = data.printData()
         case .rrChanged:
-            msbRROutputTextB.text = event.printData()
+            msbRROutputTextB.text = data.printData()
         case .gsrChanged:
-            msbGSROutputTextB.text = event.printData()
+            msbGSROutputTextB.text = data.printData()
         default:print("")
         }
         
         if(recordData){
-            DataStorage.sharedInstance.appendMSB(event)
+            DataStorage.sharedInstance.append(msbData: data)
         }
         
     }
     
-    func handlePolarEvent(event: PolarEventData) {
-        switch event.type{
+    public func handleEvent(withData data: PolarEventData) {
+        switch data.type{
         case .hrChanged:
-            polarHROutputTextB.text = event.newValue?.description
+            polarHROutputTextB.text = data.newValue?.description
         case .rrChanged:
-            polarRROutputTextB.text = event.newValue?.description
+            polarRROutputTextB.text = data.newValue?.description
         }
         
         if(recordData){
-            DataStorage.sharedInstance.appendPolar(event)
+            DataStorage.sharedInstance.append(polarData: data)
         }
     }
 }

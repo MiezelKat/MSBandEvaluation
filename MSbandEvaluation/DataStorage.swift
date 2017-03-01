@@ -12,30 +12,19 @@ import MSBandSensorService
 
 class DataStorage : NSObject{
     
-    /// singleton instance
-    class var sharedInstance : DataStorage{
-        struct Static {
-            static var onceToken : dispatch_once_t = 0
-            static var instance : DataStorage? = nil
-        }
-        dispatch_once(&Static.onceToken){
-            Static.instance = DataStorage()
-        }
-        
-        return Static.instance!
-    }
+    static let sharedInstance : DataStorage = DataStorage()
     
-    private override init(){
+    fileprivate override init(){
         super.init()
     }
     
-    private var startTS : NSTimeInterval?
+    fileprivate var startTS : TimeInterval?
     
-    private var polarDataPoints : [PolarEventData] = [PolarEventData]()
+    fileprivate var polarDataPoints : [PolarEventData] = [PolarEventData]()
     
-    private var msbDataPoints : [MSBEventData] = [MSBEventData]()
+    fileprivate var msbDataPoints : [MSBEventData] = [MSBEventData]()
     
-    private var markerTimestamps : [NSDate] = [NSDate]()
+    fileprivate var markerTimestamps : [Date] = [Date]()
     
     func reset(){
         polarDataPoints.removeAll()
@@ -43,7 +32,7 @@ class DataStorage : NSObject{
         startTS = nil
     }
     
-    func appendPolar(data : PolarEventData){
+    func append(polarData data : PolarEventData){
         if(startTS == nil)
         {
             startTS = data.timestamp.timeIntervalSince1970
@@ -51,7 +40,7 @@ class DataStorage : NSObject{
         polarDataPoints.append(data)
     }
     
-    func appendMSB(data : MSBEventData){
+    func append(msbData data : MSBEventData){
         if(startTS == nil)
         {
             startTS = data.timestamp.timeIntervalSince1970
@@ -60,42 +49,42 @@ class DataStorage : NSObject{
     }
 
     func appendMarkerTimestamp(){
-        markerTimestamps.append(NSDate())
+        markerTimestamps.append(Date())
     }
     
     func writeToDisk(){
-        let now = NSDate()
+        let now = Date()
         
-        let documentsPath = NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])
-        let dataPath = documentsPath.URLByAppendingPathComponent("record-\(now.description)")
+        let documentsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        let dataPath = documentsPath.appendingPathComponent("record-\(now.description)")
         do {
-            try NSFileManager.defaultManager().createDirectoryAtPath(dataPath.path!, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: dataPath.path, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
             NSLog("Unable to create directory \(error.debugDescription)")
         }
         
-        let polarRRURL = dataPath.URLByAppendingPathComponent("polarRR.csv")
-        let polarHRURL = dataPath.URLByAppendingPathComponent("polarHR.csv")
+        let polarRRURL = dataPath.appendingPathComponent("polarRR.csv")
+        let polarHRURL = dataPath.appendingPathComponent("polarHR.csv")
         
         // folder:
         //let polarRRFile = getDocumentsDirectory().stringByAppendingPathComponent("\(now.description)/polarRR.csv")
         //let polarHRFile = getDocumentsDirectory().stringByAppendingPathComponent("\(now.description)/polarHR.csv")
         
-        let msbRRURL = dataPath.URLByAppendingPathComponent("msbRR.csv")
-        let msbHRURL = dataPath.URLByAppendingPathComponent("msbHR.csv")
-        let msbGSRURL = dataPath.URLByAppendingPathComponent("msbGSR.csv")
-        let msbSkinTempURL = dataPath.URLByAppendingPathComponent("msbSkinTemp.csv")
+        let msbRRURL = dataPath.appendingPathComponent("msbRR.csv")
+        let msbHRURL = dataPath.appendingPathComponent("msbHR.csv")
+        let msbGSRURL = dataPath.appendingPathComponent("msbGSR.csv")
+        let msbSkinTempURL = dataPath.appendingPathComponent("msbSkinTemp.csv")
         
-        let msbAccelerometerURL = dataPath.URLByAppendingPathComponent("msbAccel.csv")
-        let msbGyroscopeURL = dataPath.URLByAppendingPathComponent("msbGyro.csv")
+        let msbAccelerometerURL = dataPath.appendingPathComponent("msbAccel.csv")
+        let msbGyroscopeURL = dataPath.appendingPathComponent("msbGyro.csv")
         
-        let msbAmbientTempURL = dataPath.URLByAppendingPathComponent("msbATemp.csv")
-        let msbAmbientPressureURL = dataPath.URLByAppendingPathComponent("msbAPressure.csv")
-        let msbAmbientLightURL = dataPath.URLByAppendingPathComponent("msbALight.csv")
+        let msbAmbientTempURL = dataPath.appendingPathComponent("msbATemp.csv")
+        let msbAmbientPressureURL = dataPath.appendingPathComponent("msbAPressure.csv")
+        let msbAmbientLightURL = dataPath.appendingPathComponent("msbALight.csv")
         
-        let msbAltimeterURL = dataPath.URLByAppendingPathComponent("msbAlti.csv")
+        let msbAltimeterURL = dataPath.appendingPathComponent("msbAlti.csv")
         
-        let markerURL = dataPath.URLByAppendingPathComponent("markers.csv")
+        let markerURL = dataPath.appendingPathComponent("markers.csv")
         
         var polarRRData  = "d,dts,ts,rr\n"
         var polarHRData  = "d,dts,ts,hr\n"
@@ -103,20 +92,20 @@ class DataStorage : NSObject{
         
         for dataP in polarDataPoints{
             if(dataP.type == PolarEventType.rrChanged){
-                polarRRData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.newValue!.description)\n")
+                polarRRData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.newValue!.description)\n")
             }else{
-                polarHRData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.newValue!.description)\n")
+                polarHRData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.newValue!.description)\n")
             }
         }
         
         do{
-            try polarRRData.writeToURL(polarRRURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try polarRRData.write(to: polarRRURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try polarHRData.writeToURL(polarHRURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try polarHRData.write(to: polarHRURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
@@ -124,7 +113,7 @@ class DataStorage : NSObject{
         var msbRRData  = "d,dts,ts,rr\n"
         var msbHRData  = "d,dts,ts,hr\n"
         var msbGSRData = "d,dts,ts,gsr\n"
-        var msbSkinTempData = "d,ts,gsr\n"
+        var msbSkinTempData = "d,ts,temp\n"
         
         var msbAccelerometerData = "d,dts,ts,x,y,z\n"
         var msbGyroscopeData = "d,dts,ts,x,y,z\n"
@@ -138,115 +127,115 @@ class DataStorage : NSObject{
         
         for dataP in msbDataPoints{
             if(dataP.type == MSBEventType.rrChanged){
-                msbRRData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbRRData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.hrChanged){
-                msbHRData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbHRData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.gsrChanged){
-                msbGSRData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbGSRData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.skinTemperatureChanged){
-                msbSkinTempData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbSkinTempData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.accelerometerChanged){
-                msbAccelerometerData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbAccelerometerData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.gyroscopeChanged){
-                msbGyroscopeData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbGyroscopeData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.ambientTemperatureChanged){
-                msbAmbientTempData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbAmbientTempData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.ambientLightChanged){
-                msbAmbientLightData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbAmbientLightData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.ambientPressureChanged){
-                msbAmbientPressureData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbAmbientPressureData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }else if(dataP.type == MSBEventType.altimeterChanged){
-                msbAltimeterData.appendContentsOf("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
+                msbAltimeterData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.printData())\n")
             }
         }
         
         var markerData  = "d,dts,ts\n"
         
         for dataP in markerTimestamps{
-            markerData.appendContentsOf("\(dataP.description),\(dataP.timeIntervalSince1970),\(dataP.timeIntervalSince1970-startTS!)\n")
+            markerData.append("\(dataP.description),\(dataP.timeIntervalSince1970),\(dataP.timeIntervalSince1970-startTS!)\n")
         }
         
         do{
-            try msbRRData.writeToURL(msbRRURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbRRData.write(to: msbRRURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try msbHRData.writeToURL(msbHRURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbHRData.write(to: msbHRURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try msbGSRData.writeToURL(msbGSRURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbGSRData.write(to: msbGSRURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try markerData.writeToURL(markerURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try markerData.write(to: markerURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
 
         do{
-            try msbAltimeterData.writeToURL(msbAltimeterURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbAltimeterData.write(to: msbAltimeterURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try msbAmbientLightData.writeToURL(msbAmbientLightURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbAmbientLightData.write(to: msbAmbientLightURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try msbAmbientPressureData.writeToURL(msbAmbientPressureURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbAmbientPressureData.write(to: msbAmbientPressureURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try msbAmbientTempData.writeToURL(msbAmbientTempURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbAmbientTempData.write(to: msbAmbientTempURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try msbSkinTempData.writeToURL(msbSkinTempURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbSkinTempData.write(to: msbSkinTempURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try msbAccelerometerData.writeToURL(msbAccelerometerURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbAccelerometerData.write(to: msbAccelerometerURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
-            try msbGyroscopeData.writeToURL(msbGyroscopeURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try msbGyroscopeData.write(to: msbGyroscopeURL, atomically: true, encoding: String.Encoding.utf8)
         }catch let error as NSError{
             print(error.description)
         }
     }
     
-    private func getDocumentsDirectory() -> NSString {
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+    fileprivate func getDocumentsDirectory() -> NSString {
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0]
-        return documentsDirectory
+        return documentsDirectory as NSString
     }
     
     func getDataSamplesList() -> [String]{
         var directories : [NSString?]
-        var directoryUrls : [NSURL]?
+        var directoryUrls : [URL]?
         
         var returnStrs = [String]()
         
         do {
-            directoryUrls = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(NSURL(fileURLWithPath: getDocumentsDirectory() as String), includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions())
+            directoryUrls = try FileManager.default.contentsOfDirectory(at: URL(fileURLWithPath: getDocumentsDirectory() as String), includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions())
             
             print(directoryUrls)
 
@@ -257,17 +246,17 @@ class DataStorage : NSObject{
         if(directoryUrls != nil){
             //mp3Files = directoryUrls!.filter{x in (x.lastPathComponent?.containsString("polarRR"))!}.map{x in x.lastPathComponent! as NSString }
             
-            let f = directoryUrls!.map{x in x.absoluteString as! NSString}
+            let f = directoryUrls!.map{x in x.absoluteString as NSString}
             
-            let d = directoryUrls!.filter{x in (x.hasDirectoryPath)}.map{x in x.absoluteString as! NSString}
+            let d = directoryUrls!.filter{x in (x.hasDirectoryPath)}.map{x in x.absoluteString as NSString}
             
             directories = d
             
             print("MP3 FILES:\n" + directories.description)
             
             for s in directories{
-                let split1 = s!.substringToIndex(s!.length - 1 - 4) as NSString
-                let split2 = split1.substringFromIndex(7)
+                let split1 = s!.substring(to: s!.length - 1 - 4) as NSString
+                let split2 = split1.substring(from: 7)
                 
                 returnStrs.append(split2)
                 

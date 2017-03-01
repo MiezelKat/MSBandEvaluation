@@ -13,7 +13,7 @@ import Foundation
  */
 public protocol PeriphalEventHandler{
     
-    func handlePeriphalEvent(event : PeriphalChangedEventData)
+    func handleEvent(withData data : PeriphalChangedEventData)
     
 }
 

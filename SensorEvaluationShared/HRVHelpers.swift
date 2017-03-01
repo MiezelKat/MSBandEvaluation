@@ -18,12 +18,12 @@ class HRVHelper {
      
      - returns: the RMSSD
      */
-    static func calculateRMSSD(rrs: [Double]) -> Double {
+    static func calculateRMSSD(_ rrs: [Double]) -> Double {
         var d = 0.0
         
         let count = rrs.count
         // sum of squared successive differences
-        for var i = 0; i < count - 1; ++i {
+        for i in 0 ... count - 1  {
             let interval0 = rrs[i]
             let interval1 = rrs[i + 1]
             let diff = interval1 - interval0
@@ -40,7 +40,7 @@ class HRVHelper {
      
      - returns: average of rr intervals
      */
-    static func calculateAVNN(rrs: [Double]) -> Double {
+    static func calculateAVNN(_ rrs: [Double]) -> Double {
         var sum = 0.0
         for rr in rrs {
             sum += rr
@@ -57,7 +57,7 @@ class HRVHelper {
      
      - returns: Standard deviation of averages
      */
-    static func calculateSDANN(rrs: [Double]) -> Double {
+    static func calculateSDANN(_ rrs: [Double]) -> Double {
         let average = calculateAVNN(rrs)
         var d = 0.0
         
@@ -79,17 +79,17 @@ class HRVHelper {
      
      - returns: Percentage of differences between RR over x ms
      */
-    static func calcPNNx(rrs: [Double], thresholdMs : Double = 50) -> Double {
+    static func calcPNNx(_ rrs: [Double], thresholdMs : Double = 50) -> Double {
         var overX: Int = 0
         
         let count = rrs.count
-        for var i = 0; i < count - 1; ++i {
+        for i in 0 ... count - 1 {
             let interval0 = rrs[i]
             let interval1 = rrs[i + 1]
-            var diff = abs(interval1 - interval0)
+            let diff = abs(interval1 - interval0)
             
             if diff > thresholdMs {
-                overX++
+                overX += 1
             }
         }
         

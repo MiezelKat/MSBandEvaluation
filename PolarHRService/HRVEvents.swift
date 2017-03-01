@@ -18,7 +18,7 @@ public protocol PolarEventHandler{
      
      - parameter event: event data
      */
-    func handlePolarEvent(event : PolarEventData)
+    func handleEvent(withData data : PolarEventData)
     
 }
 
@@ -31,7 +31,7 @@ public struct PolarEventData{
     /// new hr or rr value
     public var newValue : Int16?
     /// Timestamp of new data
-    public var timestamp : NSDate
+    public var timestamp : Date
     
     /**
      Create new event data
@@ -42,7 +42,7 @@ public struct PolarEventData{
      
      - returns: new data object
      */
-    public init(type: PolarEventType, newValue: Int16?, timestamp : NSDate = NSDate()){
+    public init(type: PolarEventType, newValue: Int16?, timestamp : Date = Date()){
         self.type = type
         self.newValue = newValue
         self.timestamp = timestamp

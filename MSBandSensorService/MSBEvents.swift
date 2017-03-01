@@ -28,7 +28,7 @@ public protocol MSBEventHandler{
      
      - parameter event: event data
      */
-    func handleMSBEvent(event : MSBEventData)
+    func handleEvent(withData data: MSBEventData)
     
 }
 
@@ -36,12 +36,10 @@ public protocol MSBEventData{
     /// Type of event
     var type : MSBEventType{
         get
-        set
     }
     /// Timestamp of new data
-    var timestamp : NSDate{
+    var timestamp : Date{
         get
-        set
     }
     
     func printData() -> String
@@ -52,11 +50,11 @@ public protocol MSBEventData{
  */
 public struct MSBEventData1D : MSBEventData{
     /// Type of event
-    public var type : MSBEventType
+    public fileprivate(set) var type : MSBEventType
     /// Timestamp of new data
-    public var timestamp : NSDate
+    public fileprivate(set) var timestamp : Date
     /// new hr or rr value
-    public var newValue : Double?
+    public fileprivate(set) var newValue : Double?
     
     /**
      Create new event data
@@ -67,7 +65,7 @@ public struct MSBEventData1D : MSBEventData{
      
      - returns: new data object
      */
-    public init(type: MSBEventType, newValue: Double?, timestamp : NSDate = NSDate()){
+    public init(type: MSBEventType, newValue: Double?, timestamp : Date = Date()){
         self.type = type
         self.newValue = newValue
         self.timestamp = timestamp
@@ -87,11 +85,11 @@ public struct MSBEventData1D : MSBEventData{
  */
 public struct MSBEventDataMD : MSBEventData{
     /// Type of event
-    public var type : MSBEventType
+    public fileprivate(set) var type : MSBEventType
     /// new hr or rr value
-    public var newValue : [Double]?
+    public fileprivate(set) var newValues : [Double]?
     /// Timestamp of new data
-    public var timestamp : NSDate
+    public fileprivate(set) var timestamp : Date
     
     /**
      Create new event data
@@ -102,21 +100,21 @@ public struct MSBEventDataMD : MSBEventData{
      
      - returns: new data object
      */
-    public init(type: MSBEventType, newValue: [Double]?, timestamp : NSDate = NSDate()){
+    public init(type: MSBEventType, newValues: [Double]?, timestamp : Date = Date()){
         self.type = type
-        self.newValue = newValue
+        self.newValues = newValues
         self.timestamp = timestamp
     }
     
     public func printData() -> String{
         var retVal = " "
         
-        if(newValue == nil){
+        if(newValues == nil){
             return retVal
         }
         
         var first = true
-        for v in newValue! {
+        for v in newValues! {
             if(!first){
                 retVal = "\(retVal),\(v.description)"
             }else{

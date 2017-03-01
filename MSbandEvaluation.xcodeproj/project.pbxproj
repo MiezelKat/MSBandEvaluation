@@ -9,12 +9,10 @@
 /* Begin PBXBuildFile section */
 		4500F2211CB5263200DE6F77 /* PolarHRService.h in Headers */ = {isa = PBXBuildFile; fileRef = 4500F2201CB5263200DE6F77 /* PolarHRService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4500F2281CB5263300DE6F77 /* PolarHRService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F21E1CB5263200DE6F77 /* PolarHRService.framework */; };
-		4500F22F1CB5263300DE6F77 /* PolarHRServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F22E1CB5263300DE6F77 /* PolarHRServiceTests.swift */; };
 		4500F2331CB5263300DE6F77 /* PolarHRService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F21E1CB5263200DE6F77 /* PolarHRService.framework */; };
 		4500F2341CB5263300DE6F77 /* PolarHRService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F21E1CB5263200DE6F77 /* PolarHRService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4500F2431CB5265200DE6F77 /* MSBandSensorService.h in Headers */ = {isa = PBXBuildFile; fileRef = 4500F2421CB5265200DE6F77 /* MSBandSensorService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4500F24A1CB5265300DE6F77 /* MSBandSensorService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F2401CB5265200DE6F77 /* MSBandSensorService.framework */; };
-		4500F2511CB5265300DE6F77 /* MSBandSensorServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F2501CB5265300DE6F77 /* MSBandSensorServiceTests.swift */; };
 		4500F2551CB5265300DE6F77 /* MSBandSensorService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F2401CB5265200DE6F77 /* MSBandSensorService.framework */; };
 		4500F2561CB5265300DE6F77 /* MSBandSensorService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F2401CB5265200DE6F77 /* MSBandSensorService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4500F2621CB527F900DE6F77 /* HRVEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F25E1CB527F900DE6F77 /* HRVEvents.swift */; };
@@ -28,8 +26,6 @@
 		4540C0151CB51DD400EDF688 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4540C0131CB51DD400EDF688 /* Main.storyboard */; };
 		4540C0171CB51DD400EDF688 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4540C0161CB51DD400EDF688 /* Assets.xcassets */; };
 		4540C01A1CB51DD400EDF688 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4540C0181CB51DD400EDF688 /* LaunchScreen.storyboard */; };
-		4540C0251CB51DD400EDF688 /* MSbandEvaluationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4540C0241CB51DD400EDF688 /* MSbandEvaluationTests.swift */; };
-		4540C0301CB51DD400EDF688 /* MSbandEvaluationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4540C02F1CB51DD400EDF688 /* MSbandEvaluationUITests.swift */; };
 		4574066F1CC79527004D1175 /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574066E1CC79527004D1175 /* MainNavigationController.swift */; };
 		457406711CC79D04004D1175 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457406701CC79D04004D1175 /* ShareViewController.swift */; };
 		45E8A7631CB7E00E00FB0080 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E8A7621CB7E00E00FB0080 /* CoreBluetooth.framework */; };
@@ -136,14 +132,10 @@
 		4500F2201CB5263200DE6F77 /* PolarHRService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolarHRService.h; sourceTree = "<group>"; };
 		4500F2221CB5263200DE6F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4500F2271CB5263200DE6F77 /* PolarHRServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PolarHRServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4500F22E1CB5263300DE6F77 /* PolarHRServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolarHRServiceTests.swift; sourceTree = "<group>"; };
-		4500F2301CB5263300DE6F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4500F2401CB5265200DE6F77 /* MSBandSensorService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MSBandSensorService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4500F2421CB5265200DE6F77 /* MSBandSensorService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSBandSensorService.h; sourceTree = "<group>"; };
 		4500F2441CB5265200DE6F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4500F2491CB5265200DE6F77 /* MSBandSensorServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MSBandSensorServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4500F2501CB5265300DE6F77 /* MSBandSensorServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSBandSensorServiceTests.swift; sourceTree = "<group>"; };
-		4500F2521CB5265300DE6F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4500F25D1CB527F900DE6F77 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Events.swift; path = ../PolarHRService/Events.swift; sourceTree = "<group>"; };
 		4500F25E1CB527F900DE6F77 /* HRVEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HRVEvents.swift; sourceTree = "<group>"; };
 		4500F25F1CB527F900DE6F77 /* HRVService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HRVService.swift; sourceTree = "<group>"; };
@@ -161,11 +153,7 @@
 		4540C0191CB51DD400EDF688 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4540C01B1CB51DD400EDF688 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4540C0201CB51DD400EDF688 /* MSbandEvaluationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MSbandEvaluationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4540C0241CB51DD400EDF688 /* MSbandEvaluationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSbandEvaluationTests.swift; sourceTree = "<group>"; };
-		4540C0261CB51DD400EDF688 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4540C02B1CB51DD400EDF688 /* MSbandEvaluationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MSbandEvaluationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4540C02F1CB51DD400EDF688 /* MSbandEvaluationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSbandEvaluationUITests.swift; sourceTree = "<group>"; };
-		4540C0311CB51DD400EDF688 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4574066E1CC79527004D1175 /* MainNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		457406701CC79D04004D1175 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		45E8A7621CB7E00E00FB0080 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -261,15 +249,6 @@
 			path = PolarHRService;
 			sourceTree = "<group>";
 		};
-		4500F22D1CB5263300DE6F77 /* PolarHRServiceTests */ = {
-			isa = PBXGroup;
-			children = (
-				4500F22E1CB5263300DE6F77 /* PolarHRServiceTests.swift */,
-				4500F2301CB5263300DE6F77 /* Info.plist */,
-			);
-			path = PolarHRServiceTests;
-			sourceTree = "<group>";
-		};
 		4500F2411CB5265200DE6F77 /* MSBandSensorService */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,15 +261,6 @@
 			path = MSBandSensorService;
 			sourceTree = "<group>";
 		};
-		4500F24F1CB5265300DE6F77 /* MSBandSensorServiceTests */ = {
-			isa = PBXGroup;
-			children = (
-				4500F2501CB5265300DE6F77 /* MSBandSensorServiceTests.swift */,
-				4500F2521CB5265300DE6F77 /* Info.plist */,
-			);
-			path = MSBandSensorServiceTests;
-			sourceTree = "<group>";
-		};
 		4540C0031CB51DD400EDF688 = {
 			isa = PBXGroup;
 			children = (
@@ -299,10 +269,6 @@
 				4500F2411CB5265200DE6F77 /* MSBandSensorService */,
 				4500F21F1CB5263200DE6F77 /* PolarHRService */,
 				4540C00E1CB51DD400EDF688 /* MSbandEvaluation */,
-				4540C0231CB51DD400EDF688 /* MSbandEvaluationTests */,
-				4540C02E1CB51DD400EDF688 /* MSbandEvaluationUITests */,
-				4500F22D1CB5263300DE6F77 /* PolarHRServiceTests */,
-				4500F24F1CB5265300DE6F77 /* MSBandSensorServiceTests */,
 				4540C00D1CB51DD400EDF688 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -336,24 +302,6 @@
 				457406701CC79D04004D1175 /* ShareViewController.swift */,
 			);
 			path = MSbandEvaluation;
-			sourceTree = "<group>";
-		};
-		4540C0231CB51DD400EDF688 /* MSbandEvaluationTests */ = {
-			isa = PBXGroup;
-			children = (
-				4540C0241CB51DD400EDF688 /* MSbandEvaluationTests.swift */,
-				4540C0261CB51DD400EDF688 /* Info.plist */,
-			);
-			path = MSbandEvaluationTests;
-			sourceTree = "<group>";
-		};
-		4540C02E1CB51DD400EDF688 /* MSbandEvaluationUITests */ = {
-			isa = PBXGroup;
-			children = (
-				4540C02F1CB51DD400EDF688 /* MSbandEvaluationUITests.swift */,
-				4540C0311CB51DD400EDF688 /* Info.plist */,
-			);
-			path = MSbandEvaluationUITests;
 			sourceTree = "<group>";
 		};
 		45E8A76B1CB82E0E00FB0080 /* SensorEvaluationShared */ = {
@@ -569,6 +517,7 @@
 					4500F21D1CB5263200DE6F77 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = G6ZDR46H87;
+						LastSwiftMigration = 0820;
 					};
 					4500F2261CB5263200DE6F77 = {
 						CreatedOnToolsVersion = 7.2;
@@ -577,6 +526,7 @@
 					4500F23F1CB5265200DE6F77 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = G6ZDR46H87;
+						LastSwiftMigration = 0820;
 					};
 					4500F2481CB5265200DE6F77 = {
 						CreatedOnToolsVersion = 7.2;
@@ -585,6 +535,7 @@
 					4540C00B1CB51DD400EDF688 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = G6ZDR46H87;
+						LastSwiftMigration = 0820;
 					};
 					4540C01F1CB51DD400EDF688 = {
 						CreatedOnToolsVersion = 7.2;
@@ -597,6 +548,7 @@
 					45E8A7691CB82E0E00FB0080 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = G6ZDR46H87;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -706,7 +658,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4500F22F1CB5263300DE6F77 /* PolarHRServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,7 +674,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4500F2511CB5265300DE6F77 /* MSBandSensorServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -743,7 +693,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4540C0251CB51DD400EDF688 /* MSbandEvaluationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -751,7 +700,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4540C0301CB51DD400EDF688 /* MSbandEvaluationUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -847,11 +795,13 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = PolarHRService/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.katrin-haensel.PolarHRService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -870,10 +820,12 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = PolarHRService/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.katrin-haensel.PolarHRService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -919,6 +871,7 @@
 				);
 				INFOPLIST_FILE = MSBandSensorService/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.katrin-haensel.MSBandSensorService";
@@ -926,6 +879,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "MSBandSensorService/MSBSensorService-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -949,12 +903,14 @@
 				);
 				INFOPLIST_FILE = MSBandSensorService/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.katrin-haensel.MSBandSensorService";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "MSBandSensorService/MSBSensorService-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1072,9 +1028,11 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MSbandEvaluation/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.katrin-haensel.MSbandEvaluation";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1086,9 +1044,11 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MSbandEvaluation/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.katrin-haensel.MSbandEvaluation";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -1151,10 +1111,12 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SensorEvaluationShared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.katrin-haensel.SensorEvaluationShared";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1172,10 +1134,12 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SensorEvaluationShared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.katrin-haensel.SensorEvaluationShared";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";

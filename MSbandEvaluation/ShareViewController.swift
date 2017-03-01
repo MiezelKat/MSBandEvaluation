@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 import MessageUI
 
-public class ShareViewController : UIViewController, UIPickerViewDelegate, MFMailComposeViewControllerDelegate{
+open class ShareViewController : UIViewController, UIPickerViewDelegate, MFMailComposeViewControllerDelegate{
     
     @IBOutlet weak var filePicker: UIPickerView!
     
     var fileStrings : [String] = [String]()
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
         //fileStrings = DataStorage.sharedInstance.getDataSamplesList()
@@ -24,7 +24,7 @@ public class ShareViewController : UIViewController, UIPickerViewDelegate, MFMai
         //filePicker.delegate = self
     }
     
-    @IBAction func sendEmail(sender: UIButton) {
+    @IBAction func sendEmail(_ sender: UIButton) {
         //Check to see the device can send email.
         if( MFMailComposeViewController.canSendMail() ) {
             
@@ -35,13 +35,13 @@ public class ShareViewController : UIViewController, UIPickerViewDelegate, MFMai
             mailComposer.setSubject("Have you heard a swift?")
             mailComposer.setMessageBody("This is what they sound like.", isHTML: false)
             
-            if let filePath = NSBundle.mainBundle().pathForResource("swifts", ofType: "wav") {
+            if let filePath = Bundle.main.path(forResource: "swifts", ofType: "wav") {
                 
-                if let fileData = NSData(contentsOfFile: filePath) {
+                if let fileData = try? Data(contentsOf: URL(fileURLWithPath: filePath)) {
                     mailComposer.addAttachmentData(fileData, mimeType: "audio/wav", fileName: "swifts")
                 }
             }
-            self.presentViewController(mailComposer, animated: true, completion: nil)
+            self.present(mailComposer, animated: true, completion: nil)
         }
     }
     
@@ -49,28 +49,28 @@ public class ShareViewController : UIViewController, UIPickerViewDelegate, MFMai
     //    self.dismissViewControllerAnimated(true, completion: nil)
     //}
     
-    public func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    open func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     
-    @IBAction func shareBtnPressed(sender: AnyObject) {
+    @IBAction func shareBtnPressed(_ sender: AnyObject) {
         
     }
 
-    public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    open func numberOfComponentsInPickerView(_ pickerView: UIPickerView) -> Int {
         return 1
     }
 
-    public func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    open func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return fileStrings.count
     }
 
-    public func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    open func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return fileStrings[row]
     }
 
-    public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    open func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         //fileStrings.text = pickOption[row]
     }
     

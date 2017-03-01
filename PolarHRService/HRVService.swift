@@ -10,6 +10,30 @@ import Foundation
 import CoreBluetooth
 import QuartzCore
 import SensorEvaluationShared
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 let POLARH7_HRM_DEVICE_INFO_SERVICE_UUID = "0x180A"
 let POLARH7_HRM_HEART_RATE_SERVICE_UUID = "0x180D"
@@ -18,30 +42,20 @@ let POLARH7_HRM_BODY_LOCATION_CHARACTERISTIC_UUID = "2A38"
 let POLARH7_HRM_MANUFACTURER_NAME_CHARACTERISTIC_UUID = "2A29"
 
 /// Service for obtaining heart rate and rr values of a Polar Loop Chest Strap
-public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
+open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 {
     
     // MARK: Initialisation
     
     /// singleton instance
-    public class var instance : PolarHRService{
-        struct Static {
-            static var onceToken : dispatch_once_t = 0
-            static var instance : PolarHRService? = nil
-        }
-        dispatch_once(&Static.onceToken){
-            Static.instance = PolarHRService()
-        }
-        
-        return Static.instance!
-    }
-
+    public static let instance : PolarHRService = PolarHRService()
+    
     /**
     Initialises a new instance
     
     - returns: new instance
     */
-    private override init() {
+    fileprivate override init() {
         
         let cm = CBCentralManager(delegate: nil, queue: nil)
         self.centralManager = cm;
@@ -54,35 +68,37 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     // MARK: Attributs
     
     /// For the discovery of devices
-    private var centralManager : CBCentralManager
+    fileprivate var centralManager : CBCentralManager
     /// Remote peripheral device
-    private var polarH7HRMPeripheral : CBPeripheral?
+    fileprivate var polarH7HRMPeripheral : CBPeripheral?
 
     /// Flag if the device is connected
-    private(set) public var isConnected = false
+    fileprivate(set) open var isConnected = false
     
     /// Device Info
-    private(set) public var deviceInfo : NSString?
+    fileprivate(set) open var deviceInfo : NSString?
     
     /// Position of Sensor
-    private(set) public var bodyData: NSString?;
+    fileprivate(set) open var bodyData: NSString?;
     
     /// Manufacturer
-    private(set) public var manufacturer: NSString?;
+    fileprivate(set) open var manufacturer: NSString?;
     
-    private var polarH7DeviceData: NSString?;
+    fileprivate var polarH7DeviceData: NSString?;
 
+    fileprivate var isConnecting = false
+    
 
     // MARK: Calculated Attributes for HR and RR
 
     var _heartRate: Int16?
 
     /// the current Heart Rate
-    private(set) public var heartRate: Int16?{
+    fileprivate(set) open var heartRate: Int16?{
         set(val){
             if(_heartRate != val){
                 _heartRate = val
-                hrEvent.raise(PolarEventData(type: PolarEventType.hrChanged, newValue: _heartRate))
+                hrEvent.raise(withData: PolarEventData(type: PolarEventType.hrChanged, newValue: _heartRate))
             }
         }
         get{
@@ -93,11 +109,11 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     var _rrInterval: Int16?
     
     /// the current Heart Rate
-    private(set) public var rrInterval: Int16?{
+    fileprivate(set) open var rrInterval: Int16?{
         set(val){
             if(_rrInterval != val){
                 _rrInterval = val
-                hrEvent.raise(PolarEventData(type: PolarEventType.rrChanged, newValue: _rrInterval))
+                hrEvent.raise(withData: PolarEventData(type: PolarEventType.rrChanged, newValue: _rrInterval))
             }
         }
         get{
@@ -107,9 +123,9 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     
     // MARK: Private Events
 
-    private let hrEvent = Event<PolarEventData>()
+    fileprivate let hrEvent = Event<PolarEventData>()
     
-    private let periphalEvent = Event<PeriphalChangedEventData>()
+    fileprivate let periphalEvent = Event<PeriphalChangedEventData>()
     
 
     // MARK: Connect to Polar Strap
@@ -117,10 +133,11 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     /**
     Start connection process
     */
-    public func connect(){
+    open func connect(){
         //let services = [CBUUID(string: POLARH7_HRM_HEART_RATE_SERVICE_UUID), CBUUID(string: POLARH7_HRM_DEVICE_INFO_SERVICE_UUID)]
         //centralManager.scanForPeripheralsWithServices(services, options: nil)
-        centralManager.scanForPeripheralsWithServices(nil, options: nil)
+        isConnecting = true
+        centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
 
     // MARK: Public functions for event subscription
@@ -130,8 +147,8 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
      
      - parameter hrEventHandler: hr event handler
      */
-    public func subcribeToHREvents(hrEventHandler : PolarEventHandler){
-        hrEvent.addHandler( {e in hrEventHandler.handlePolarEvent(e)} )
+    open func subcribeToHREvents(_ hrEventHandler : PolarEventHandler){
+        hrEvent.add(handler:  {e in hrEventHandler.handleEvent(withData: e)} )
     }
 
     /**
@@ -139,8 +156,8 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
 
      - parameter pEventHandler: periphal event handler
      */
-    public func subcribeToPeriphalEvents(pEventHandler : PeriphalEventHandler){
-        periphalEvent.addHandler( {e in pEventHandler.handlePeriphalEvent(e)} )
+    open func subcribeToPeriphalEvents(_ pEventHandler : PeriphalEventHandler){
+        periphalEvent.add(handler:  {e in pEventHandler.handleEvent(withData: e)} )
     }
 
     //MARK: CBCentralManagerDelegate
@@ -153,19 +170,21 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     - parameter advertisementData: advertisement data
     - parameter RSSI:              RSSI
     */
-    public func centralManager(central: CBCentralManager,
-        didDiscoverPeripheral peripheral: CBPeripheral,
-         advertisementData: [String : AnyObject],
-         RSSI: NSNumber)
+    open func centralManager(_ central: CBCentralManager,
+        didDiscover peripheral: CBPeripheral,
+         advertisementData: [String : Any],
+         rssi RSSI: NSNumber)
     {
-        let localName = advertisementData[CBAdvertisementDataLocalNameKey];
-        if (localName?.length > 0) {
-            NSLog("Found the heart rate monitor: \(localName)");
-            centralManager.stopScan();
-            polarH7HRMPeripheral = peripheral;
-            polarH7HRMPeripheral!.delegate = self;
-            centralManager.connectPeripheral(polarH7HRMPeripheral!, options:nil);
-            periphalEvent.raise(PeriphalChangedEventData(status: PeriphalStatus.isConnecting, source: PeriphalSourceType.polarStrap) )
+        if(isConnecting){
+            let localName = advertisementData[CBAdvertisementDataLocalNameKey];
+            if ((localName as AnyObject).length > 0) {
+                NSLog("Found the heart rate monitor: \(localName)");
+                centralManager.stopScan();
+                polarH7HRMPeripheral = peripheral;
+                polarH7HRMPeripheral!.delegate = self;
+                centralManager.connect(polarH7HRMPeripheral!, options:nil);
+                periphalEvent.raise(withData: PeriphalChangedEventData(status: PeriphalStatus.isConnecting, source: PeriphalSourceType.polarStrap) )
+            }
         }
     }
 
@@ -175,13 +194,13 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     - parameter central:    central manager
     - parameter peripheral: the dicovered device
     */
-    public func centralManager(central: CBCentralManager,
-        didConnectPeripheral peripheral: CBPeripheral)
+    open func centralManager(_ central: CBCentralManager,
+        didConnect peripheral: CBPeripheral)
     {
         peripheral.delegate = self;
         peripheral.discoverServices(nil);
-        self.isConnected = peripheral.state == CBPeripheralState.Connected
-        periphalEvent.raise(PeriphalChangedEventData(status: PeriphalStatus.isConnected, source: PeriphalSourceType.polarStrap) )
+        self.isConnected = peripheral.state == CBPeripheralState.connected
+        periphalEvent.raise(withData: PeriphalChangedEventData(status: PeriphalStatus.isConnected, source: PeriphalSourceType.polarStrap) )
         NSLog("connected: \(self.isConnected)");
     }
 
@@ -191,25 +210,29 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
 
     - parameter central: central manager
     */
-    public func centralManagerDidUpdateState(central: CBCentralManager)
+    open func centralManagerDidUpdateState(_ central: CBCentralManager)
     {
-        // Determine the state of the peripheral
-        if (central.state == CBCentralManagerState.PoweredOff) {
-            NSLog("CoreBluetooth BLE hardware is powered off");
-        }
-        else if (central.state  == CBCentralManagerState.PoweredOn) {
+        if (central.state  == CBManagerState.poweredOn) {
             NSLog("CoreBluetooth BLE hardware is powered on and ready");
             let services = [CBUUID(string: POLARH7_HRM_HEART_RATE_SERVICE_UUID), CBUUID(string: POLARH7_HRM_DEVICE_INFO_SERVICE_UUID)]
-            centralManager.scanForPeripheralsWithServices(services, options: nil)
-        }
-        else if (central.state  == CBCentralManagerState.Unauthorized) {
-            NSLog("CoreBluetooth BLE state is unauthorized");
-        }
-        else if (central.state  == CBCentralManagerState.Unknown) {
-            NSLog("CoreBluetooth BLE state is unknown");
-        }
-        else if (central.state  == CBCentralManagerState.Unsupported) {
-            NSLog("CoreBluetooth BLE hardware is unsupported on this platform");
+            centralManager.scanForPeripherals(withServices: services, options: nil)
+        }else{
+            
+            periphalEvent.raise(withData: PeriphalChangedEventData(status: PeriphalStatus.isDisconnected, source: PeriphalSourceType.polarStrap) )
+            
+            // Determine the state of the peripheral
+            if (central.state == CBManagerState.poweredOff) {
+                NSLog("CoreBluetooth BLE hardware is powered off");
+            }
+            else if (central.state  == CBManagerState.unauthorized) {
+                NSLog("CoreBluetooth BLE state is unauthorized");
+            }
+            else if (central.state  == CBManagerState.unknown) {
+                NSLog("CoreBluetooth BLE state is unknown");
+            }
+            else if (central.state  == CBManagerState.unsupported) {
+                NSLog("CoreBluetooth BLE hardware is unsupported on this platform");
+            }
         }
     }
 
@@ -221,12 +244,12 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     - parameter peripheral: peripheral with services
     - parameter error:      error
     */
-    public func peripheral(peripheral: CBPeripheral,
-        didDiscoverServices error: NSError?)
+    open func peripheral(_ peripheral: CBPeripheral,
+        didDiscoverServices error: Error?)
     {
         for service in peripheral.services! {
-            NSLog("Discovered service: \(service.UUID)");
-            peripheral.discoverCharacteristics(nil, forService: service)
+            NSLog("Discovered service: \(service.uuid)");
+            peripheral.discoverCharacteristics(nil, for: service)
         }
     }
 
@@ -237,31 +260,31 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     - parameter service:    service, which characteristics have been discovered
     - parameter error:      error
     */
-    public func peripheral(peripheral: CBPeripheral,
-         didDiscoverCharacteristicsForService service: CBService,
-            error: NSError?)
+    open func peripheral(_ peripheral: CBPeripheral,
+         didDiscoverCharacteristicsFor service: CBService,
+            error: Error?)
     {
-        if (service.UUID.isEqual(CBUUID(string: POLARH7_HRM_HEART_RATE_SERVICE_UUID)))  {  // 1
+        if (service.uuid.isEqual(CBUUID(string: POLARH7_HRM_HEART_RATE_SERVICE_UUID)))  {  // 1
             for aChar in service.characteristics!
             {
                 // Request heart rate notifications
-                if (aChar.UUID.isEqual(CBUUID(string: POLARH7_HRM_MEASUREMENT_CHARACTERISTIC_UUID))) { // 2
-                    self.polarH7HRMPeripheral!.setNotifyValue(true, forCharacteristic:aChar)
+                if (aChar.uuid.isEqual(CBUUID(string: POLARH7_HRM_MEASUREMENT_CHARACTERISTIC_UUID))) { // 2
+                    self.polarH7HRMPeripheral!.setNotifyValue(true, for:aChar)
                     NSLog("Found heart rate measurement characteristic")
                 }
                     // Request body sensor location
-                else if (aChar.UUID.isEqual(CBUUID(string:POLARH7_HRM_BODY_LOCATION_CHARACTERISTIC_UUID))) { // 3
-                    self.polarH7HRMPeripheral!.readValueForCharacteristic(aChar)
+                else if (aChar.uuid.isEqual(CBUUID(string:POLARH7_HRM_BODY_LOCATION_CHARACTERISTIC_UUID))) { // 3
+                    self.polarH7HRMPeripheral!.readValue(for: aChar)
                     NSLog("Found body sensor location characteristic")
                 }
             }
         }
         // Retrieve Device Information Services for the Manufacturer Name
-        if (service.UUID.isEqual(CBUUID(string: POLARH7_HRM_DEVICE_INFO_SERVICE_UUID)))  { // 4
+        if (service.uuid.isEqual(CBUUID(string: POLARH7_HRM_DEVICE_INFO_SERVICE_UUID)))  { // 4
             for aChar in service.characteristics!
             {
-                if (aChar.UUID.isEqual(CBUUID(string:POLARH7_HRM_MANUFACTURER_NAME_CHARACTERISTIC_UUID))) {
-                    self.polarH7HRMPeripheral!.readValueForCharacteristic(aChar)
+                if (aChar.uuid.isEqual(CBUUID(string:POLARH7_HRM_MANUFACTURER_NAME_CHARACTERISTIC_UUID))) {
+                    self.polarH7HRMPeripheral!.readValue(for: aChar)
                     NSLog("Found a device manufacturer name characteristic")
                 }
             }
@@ -275,26 +298,26 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     - parameter characteristic: characteristics, which are updated
     - parameter error:          error
     */
-    public func peripheral(peripheral: CBPeripheral,
-         didUpdateValueForCharacteristic characteristic: CBCharacteristic,
-         error: NSError?)    {
+    open func peripheral(_ peripheral: CBPeripheral,
+         didUpdateValueFor characteristic: CBCharacteristic,
+         error: Error?)    {
             // Updated value for heart rate measurement received
-            if (characteristic.UUID.isEqual(CBUUID(string: POLARH7_HRM_MEASUREMENT_CHARACTERISTIC_UUID))) { // 1
+            if (characteristic.uuid.isEqual(CBUUID(string: POLARH7_HRM_MEASUREMENT_CHARACTERISTIC_UUID))) { // 1
                 // Get the Heart Rate Monitor BPM
-                getHeartBPMData(characteristic, error:error)
+                getHeartBPMData(characteristic, error:error as NSError?)
             }
             // Retrieve the characteristic value for manufacturer name received
-            if (characteristic.UUID.isEqual(CBUUID(string: POLARH7_HRM_MANUFACTURER_NAME_CHARACTERISTIC_UUID))) {  // 2
+            if (characteristic.uuid.isEqual(CBUUID(string: POLARH7_HRM_MANUFACTURER_NAME_CHARACTERISTIC_UUID))) {  // 2
                 getManufacturerName(characteristic)
             }
                 // Retrieve the characteristic value for the body sensor location received
-            else if (characteristic.UUID.isEqual(CBUUID(string: POLARH7_HRM_BODY_LOCATION_CHARACTERISTIC_UUID))) {  // 3
+            else if (characteristic.uuid.isEqual(CBUUID(string: POLARH7_HRM_BODY_LOCATION_CHARACTERISTIC_UUID))) {  // 3
                 getBodyLocation(characteristic)
             }
 
             // Add your constructed device information to your UITextView
             if(bodyData != nil && manufacturer != nil){
-                self.deviceInfo = NSString(format: "%@\n%@\n%@\n", self.isConnected, self.bodyData!, self.manufacturer!)  // 4
+                self.deviceInfo = NSString(format: "%@\n%@\n%@\n", self.isConnected as CVarArg, self.bodyData!, self.manufacturer!)  // 4
             }
     }
     
@@ -306,19 +329,19 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     - parameter characteristic: characteristic with HR data
     - parameter error:          error
     */
-    private func getHeartBPMData(characteristic: CBCharacteristic, error: NSError?)
+    fileprivate func getHeartBPMData(_ characteristic: CBCharacteristic, error: NSError?)
     {
         // Get the Heart Rate Monitor BPM
         let data = characteristic.value
-        let reportData = UnsafePointer<UInt8>(data!.bytes)
+        let reportData = (data! as NSData).bytes.bindMemory(to: UInt8.self, capacity: data!.count)
 
         var bpm : UInt16 = 0
         var rr : UInt16 = 0
         
         var str = ""
         
-        for i in 0 ... data!.length/2{
-            str.appendContentsOf("\(reportData[i]) ")
+        for i in 0 ... data!.count/2{
+            str.append("\(reportData[i]) ")
         }
         
         var offsetBits = 1
@@ -330,7 +353,9 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
             offsetBits += 1
         }
         else {
-            bpm = UnsafePointer<UInt16>(reportData + offsetBits)[0]
+            // todo: test
+            bpm = UInt16(reportData.advanced(by: offsetBits)[0])
+                //UnsafePointer<UInt16>(reportData + offsetBits)[0]
             bpm = CFSwapInt16LittleToHost(bpm)
             offsetBits += 2
         }
@@ -342,7 +367,8 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
         
         // check if RR data present (16 bit)
         if ((reportData[0] & 0x16) != 0) {          // 2
-            rr = UnsafePointer<UInt16>(reportData + offsetBits)[0]
+            rr = UInt16(reportData.advanced(by: offsetBits)[0])
+                //UnsafePointer<UInt16>(reportData + offsetBits)[0]
             rr = CFSwapInt16LittleToHost(rr)
         }
         
@@ -358,9 +384,9 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     
     - parameter characteristic: characteristic with manufacturer information
     */
-    private func getManufacturerName(characteristic: CBCharacteristic)
+    fileprivate func getManufacturerName(_ characteristic: CBCharacteristic)
     {
-        let manufacturerName = NSString(data: characteristic.value!, encoding:NSUTF8StringEncoding)
+        let manufacturerName = NSString(data: characteristic.value!, encoding:String.Encoding.utf8.rawValue)
         self.manufacturer = NSString(format:"Manufacturer: %@", manufacturerName!)
     }
     
@@ -369,11 +395,11 @@ public class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDe
     
     - parameter characteristic: characteristics send by periphical delegate
     */
-    func getBodyLocation(characteristic: CBCharacteristic )
+    func getBodyLocation(_ characteristic: CBCharacteristic )
     {
         // data as byte array
         let data = characteristic.value
-        let bodyData = UnsafePointer<UInt8>(data!.bytes)
+        let bodyData = (data! as NSData).bytes.bindMemory(to: UInt8.self, capacity: data!.count)
 
         // has information about body location
         if (bodyData != nil) {

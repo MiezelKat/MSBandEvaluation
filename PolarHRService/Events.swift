@@ -9,29 +9,26 @@
 import Foundation
 
 /// Class for generic events
-public class Event<T> {
+open class Event<T> {
     
-    public typealias EventHandler = T -> ()
+    public typealias EventHandler = (T) -> ()
     
-    private var eventHandlers = [EventHandler]()
+    fileprivate var eventHandlers = [EventHandler]()
     
     public init(){}
-    
-    /**
-      Add an eventhandler
-     
-     - parameter handler: method pointer to handler
-     */
-    public func addHandler(handler: EventHandler) {
+        
+    /// Add an eventhandler
+    ///
+    /// - Parameter handler: method pointer to handler
+    open func add(handler: @escaping EventHandler) {
         eventHandlers.append(handler)
     }
     
-    /**
-     raise new event with data
-     
-     - parameter data: event data
-     */
-    public func raise(data: T) {
+
+    /// raise new event with data
+    ///
+    /// - Parameter data: event data
+    open func raise(withData data: T) {
         for handler in eventHandlers {
             handler(data)
         }

@@ -9,22 +9,9 @@
 import Foundation
 import SensorEvaluationShared
 
-public class MSBService : NSObject, MSBClientManagerDelegate{
-    
-    // MARK: Singleton and constructor
-    
-    /// singleton instance
-    public class var instance : MSBService{
-        struct Static {
-            static var onceToken : dispatch_once_t = 0
-            static var instance : MSBService? = nil
-        }
-        dispatch_once(&Static.onceToken){
-            Static.instance = MSBService()
-        }
-        
-        return Static.instance!
-    }
+public  class MSBService : NSObject, MSBClientManagerDelegate{
+
+    public static let instance : MSBService = MSBService()
     
     private override init(){
         super.init()
@@ -35,24 +22,24 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
     /// MSBand Client
     var client: MSBClient?
     /// Singleton instance of the client manager
-    private var clientManager = MSBClientManager.sharedManager()
+    fileprivate var clientManager = MSBClientManager.shared()
     
     // MARK: Private Events
     
-    private let msbEvent = Event<MSBEventData>()
+    fileprivate let msbEvent = Event<MSBEventData>()
     
-    private let periphalEvent = Event<PeriphalChangedEventData>()
+    fileprivate let periphalEvent = Event<PeriphalChangedEventData>()
     
     //MARK: Connect
     
-    public func connect(){
-        clientManager.delegate = self
-        if let band = clientManager.attachedClients().first as! MSBClient? {
+    open func connect(){
+        clientManager?.delegate = self
+        if let band = clientManager?.attachedClients().first as! MSBClient? {
             self.client = band
-            clientManager.connectClient(client)
-            periphalEvent.raise(PeriphalChangedEventData(status: PeriphalStatus.isConnecting, source: PeriphalSourceType.microsoftBand))
+            clientManager?.connect(client)
+            periphalEvent.raise(withData: PeriphalChangedEventData(status: PeriphalStatus.isConnecting, source: PeriphalSourceType.microsoftBand))
         } else {
-            periphalEvent.raise(PeriphalChangedEventData(status: PeriphalStatus.failedConnecting, source: PeriphalSourceType.microsoftBand))
+            periphalEvent.raise(withData: PeriphalChangedEventData(status: PeriphalStatus.failedConnecting, source: PeriphalSourceType.microsoftBand))
             return
         }
     }
@@ -64,8 +51,8 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
     
     - parameter hrEventHandler: hr event handler
     */
-    public func subcribeToMSBEvents(msbEventHandler : MSBEventHandler){
-        msbEvent.addHandler( {e in msbEventHandler.handleMSBEvent(e)} )
+    open func subscribe(msbEventHandler handler : MSBEventHandler){
+        msbEvent.add(handler: {e in handler.handleEvent(withData: e)} )
     }
     
     /**
@@ -73,24 +60,29 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
      
      - parameter pEventHandler: periphal event handler
      */
-    public func subcribeToPeriphalEvents(pEventHandler : PeriphalEventHandler){
-        periphalEvent.addHandler( {e in pEventHandler.handlePeriphalEvent(e)} )
+    open func subscribe(periphalEventHandler handler: PeriphalEventHandler){
+        periphalEvent.add(handler: {e in handler.handleEvent(withData:e)} )
     }
 
     
     // MARK - MSBClientManagerDelegate
-    public func clientManager(clientManager: MSBClientManager!, clientDidConnect client: MSBClient!) {
-        periphalEvent.raise(PeriphalChangedEventData(status: PeriphalStatus.isConnected, source: PeriphalSourceType.microsoftBand));
+    
+    public func clientManager(_ clientManager: MSBClientManager!, client: MSBClient!, didFailToConnectWithError error: Error!) {
+        periphalEvent.raise(withData: PeriphalChangedEventData(status: PeriphalStatus.failedConnecting, source: PeriphalSourceType.microsoftBand));
+    }
+    
+    open func clientManager(_ clientManager: MSBClientManager!, clientDidConnect client: MSBClient!) {
+        periphalEvent.raise(withData: PeriphalChangedEventData(status: PeriphalStatus.isConnected, source: PeriphalSourceType.microsoftBand));
         let consent : MSBUserConsent = self.client!.sensorManager.heartRateUserConsent()
         switch (consent)
         {
-        case MSBUserConsent.Granted:
+        case MSBUserConsent.granted:
             // user has granted access
             self.startHeartRateUpdates()
-        case MSBUserConsent.NotSpecified:
+        case MSBUserConsent.notSpecified:
             // request user consent
-            self.client!.sensorManager.requestHRUserConsentWithCompletion({
-                (userConsent: Bool, error : NSError?) -> Void in
+            self.client!.sensorManager.requestHRUserConsent(completion: {
+                (userConsent: Bool, error : Error?) -> Void in
                 
                 if (userConsent)
                 {
@@ -104,27 +96,25 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
                 }
                 
             })
-        case MSBUserConsent.Declined:
+        case MSBUserConsent.declined:
             print("declined")
             
         }
     }
     
-    public func clientManager(clientManager: MSBClientManager!, clientDidDisconnect client: MSBClient!) {
-        periphalEvent.raise(PeriphalChangedEventData(status: PeriphalStatus.isDisconnected, source: PeriphalSourceType.microsoftBand));
+    open func clientManager(_ clientManager: MSBClientManager!, clientDidDisconnect client: MSBClient!) {
+        periphalEvent.raise(withData: PeriphalChangedEventData(status: PeriphalStatus.isDisconnected, source: PeriphalSourceType.microsoftBand));
     }
   
-    public func clientManager(clientManager: MSBClientManager!, client: MSBClient!, didFailToConnectWithError error: NSError!) {
-        periphalEvent.raise(PeriphalChangedEventData(status: PeriphalStatus.failedConnecting, source: PeriphalSourceType.microsoftBand));
-    }
     
     
     func startHeartRateUpdates() {
         if let client = self.client {
             // RR
             do{
-                try client.sensorManager.startRRIntervalUpdatesToQueue(nil, withHandler: { (rrData: MSBSensorRRIntervalData!, error: NSError!) in
-                    self.msbEvent.raise(MSBEventData1D(type: MSBEventType.rrChanged, newValue: rrData.interval))
+                try client.sensorManager.startRRIntervalUpdates(to: nil, withHandler: { (rrData: MSBSensorRRIntervalData?, error: Error?) in
+                    let eventData : MSBEventData = MSBEventData1D(type: MSBEventType.rrChanged, newValue: rrData!.interval)
+                    self.msbEvent.raise(withData: eventData)
                 })
             } catch let error as NSError {
                 print("startRRUpdatesToQueue failed: \(error.description)")
@@ -132,8 +122,8 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
             
             // HR
             do {
-                try client.sensorManager.startHeartRateUpdatesToQueue(nil, withHandler: { (heartRateData: MSBSensorHeartRateData!, error: NSError!) in
-                    self.msbEvent.raise(MSBEventData1D(type: MSBEventType.hrChanged, newValue: Double(heartRateData.heartRate)))
+                try client.sensorManager.startHeartRateUpdates(to: nil, withHandler: { (heartRateData: MSBSensorHeartRateData?, error: Error?) in
+                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.hrChanged, newValue: Double(heartRateData!.heartRate)))
                 })
             } catch let error as NSError {
                 print("startHeartRateUpdatesToQueue failed: \(error.description)")
@@ -141,8 +131,8 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
             
             // GSR
             do{
-                try client.sensorManager.startGSRUpdatesToQueue(nil, withHandler: { (gsrData: MSBSensorGSRData!, error: NSError!) in
-                    self.msbEvent.raise(MSBEventData1D(type: MSBEventType.gsrChanged, newValue: Double(gsrData.resistance)))
+                try client.sensorManager.startGSRUpdates(to: nil, withHandler: { (gsrData: MSBSensorGSRData?, error: Error?) in
+                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.gsrChanged, newValue: Double(gsrData!.resistance)))
                 })
             } catch let error as NSError {
                 print("startGSRUpdatesToQueue failed: \(error.description)")
@@ -150,17 +140,27 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
             
             // Accelerometer
             do{
-                try client.sensorManager.startAccelerometerUpdatesToQueue(nil, withHandler: { (accelerometerData: MSBSensorAccelerometerData!, error: NSError!) in
-                    self.msbEvent.raise(MSBEventDataMD(type: MSBEventType.accelerometerChanged, newValue: [Double(accelerometerData.x), Double(accelerometerData.y), Double(accelerometerData.z)]))
+                try client.sensorManager.startAccelerometerUpdates(to: nil, withHandler: { (accelerometerData: MSBSensorAccelerometerData?, error: Error?) in
+                    self.msbEvent.raise(withData: MSBEventDataMD(type: MSBEventType.accelerometerChanged, newValues: [Double(accelerometerData!.x), Double(accelerometerData!.y), Double(accelerometerData!.z)]))
                 })
             } catch let error as NSError {
                 print("startAccelerometerUpdatesToQueue failed: \(error.description)")
             }
             
+            // Skin Temp 
+            do{
+                try client.sensorManager.startSkinTempUpdates(to: nil, withHandler: { (skinTempData: MSBSensorSkinTemperatureData?, error: Error?) in
+                    self.msbEvent.raise(withData: MSBEventDataMD(type: MSBEventType.skinTemperatureChanged, newValues: [Double(skinTempData!.temperature)]))
+                })
+            } catch let error as NSError {
+                print("startAccelerometerUpdatesToQueue failed: \(error.description)")
+            }
+            
+            
             // Gyroscope
             do{
-                try client.sensorManager.startGyroscopeUpdatesToQueue(nil, withHandler: { (gyroscopeData: MSBSensorGyroscopeData!, error: NSError!) in
-                    self.msbEvent.raise(MSBEventDataMD(type: MSBEventType.gyroscopeChanged, newValue: [Double(gyroscopeData.x), Double(gyroscopeData.y), Double(gyroscopeData.z)]))
+                try client.sensorManager.startGyroscopeUpdates(to: nil, withHandler: { (gyroscopeData: MSBSensorGyroscopeData?, error: Error?) in
+                    self.msbEvent.raise(withData: MSBEventDataMD(type: MSBEventType.gyroscopeChanged, newValues: [Double(gyroscopeData!.x), Double(gyroscopeData!.y), Double(gyroscopeData!.z)]))
                 })
             } catch let error as NSError {
                 print("startGyroscopeUpdatesToQueue failed: \(error.description)")
@@ -168,8 +168,8 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
             
             // altimeter
             do{
-                try client.sensorManager.startAltimeterUpdatesToQueue(nil, withHandler: { (altimeterData: MSBSensorAltimeterData!, error: NSError!) in
-                    self.msbEvent.raise(MSBEventData1D(type: MSBEventType.altimeterChanged, newValue: Double(altimeterData.rate)))
+                try client.sensorManager.startAltimeterUpdates(to: nil, withHandler: { (altimeterData: MSBSensorAltimeterData?, error: Error?) in
+                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.altimeterChanged, newValue: Double(altimeterData!.rate)))
                 })
             } catch let error as NSError {
                 print("startAltimeterUpdatesToQueue failed: \(error.description)")
@@ -177,8 +177,8 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
             
             // ambient light
             do{
-                try client.sensorManager.startAmbientLightUpdatesToQueue(nil, withHandler: { (lightData: MSBSensorAmbientLightData!, error: NSError!) in
-                    self.msbEvent.raise(MSBEventData1D(type: MSBEventType.ambientLightChanged, newValue: Double(lightData.brightness)))
+                try client.sensorManager.startAmbientLightUpdates(to: nil, withHandler: { (lightData: MSBSensorAmbientLightData?, error: Error?) in
+                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.ambientLightChanged, newValue: Double(lightData!.brightness)))
                 })
             } catch let error as NSError {
                 print("startAltimeterUpdatesToQueue failed: \(error.description)")
@@ -186,9 +186,9 @@ public class MSBService : NSObject, MSBClientManagerDelegate{
             
             // ambient barometer
             do{
-                try client.sensorManager.startBarometerUpdatesToQueue(nil, withHandler: { (barometerData: MSBSensorBarometerData!, error: NSError!) in
-                    self.msbEvent.raise(MSBEventData1D(type: MSBEventType.ambientTemperatureChanged, newValue: Double(barometerData.temperature)))
-                    self.msbEvent.raise(MSBEventData1D(type: MSBEventType.ambientPressureChanged, newValue: Double(barometerData.airPressure)))
+                try client.sensorManager.startBarometerUpdates(to: nil, withHandler: { (barometerData: MSBSensorBarometerData?, error: Error?) in
+                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.ambientTemperatureChanged, newValue: Double(barometerData!.temperature)))
+                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.ambientPressureChanged, newValue: Double(barometerData!.airPressure)))
                 })
             } catch let error as NSError {
                 print("startAltimeterUpdatesToQueue failed: \(error.description)")

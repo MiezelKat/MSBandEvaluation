@@ -9,11 +9,11 @@
 import Foundation
 import UIKit
 
-public class MainNavigationController: UINavigationController{
+open class MainNavigationController: UINavigationController{
     
     @IBOutlet weak var uiNavigationBar: UINavigationBar!
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
