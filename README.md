@@ -1,6 +1,6 @@
 # MSBandEvaluation
 
-Test app to get sensing data from the Microsoft Band 2 and the Polar H7 chest strap. 
+iOS app to get sensing data from the Microsoft Band 2 and the Polar H7 chest strap. 
 
 ## Collected Data
 
