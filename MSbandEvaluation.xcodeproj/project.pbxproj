@@ -15,8 +15,8 @@
 		4500F24A1CB5265300DE6F77 /* MSBandSensorService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F2401CB5265200DE6F77 /* MSBandSensorService.framework */; };
 		4500F2551CB5265300DE6F77 /* MSBandSensorService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F2401CB5265200DE6F77 /* MSBandSensorService.framework */; };
 		4500F2561CB5265300DE6F77 /* MSBandSensorService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F2401CB5265200DE6F77 /* MSBandSensorService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		4500F2621CB527F900DE6F77 /* HRVEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F25E1CB527F900DE6F77 /* HRVEvents.swift */; };
-		4500F2631CB527F900DE6F77 /* HRVService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F25F1CB527F900DE6F77 /* HRVService.swift */; };
+		4500F2621CB527F900DE6F77 /* PolarHREvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F25E1CB527F900DE6F77 /* PolarHREvents.swift */; };
+		4500F2631CB527F900DE6F77 /* PolarHRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F25F1CB527F900DE6F77 /* PolarHRService.swift */; };
 		4500F26B1CB6988600DE6F77 /* MicrosoftBandKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500F26A1CB6988600DE6F77 /* MicrosoftBandKit_iOS.framework */; };
 		4500F26D1CB698C700DE6F77 /* MSBSensorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F26C1CB698C700DE6F77 /* MSBSensorService.swift */; };
 		4500F2731CB6A32F00DE6F77 /* MSBEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500F2721CB6A32F00DE6F77 /* MSBEvents.swift */; };
@@ -43,6 +43,8 @@
 		46299F051D4A453F00DC640B /* app_icon80.png in Resources */ = {isa = PBXBuildFile; fileRef = 46299F011D4A453F00DC640B /* app_icon80.png */; };
 		46299F061D4A453F00DC640B /* app_icon87.png in Resources */ = {isa = PBXBuildFile; fileRef = 46299F021D4A453F00DC640B /* app_icon87.png */; };
 		46299F071D4A453F00DC640B /* app_icon180.png in Resources */ = {isa = PBXBuildFile; fileRef = 46299F031D4A453F00DC640B /* app_icon180.png */; };
+		4F2E403C1EA38D8500B22BF7 /* SensorDataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2E403B1EA38D8500B22BF7 /* SensorDataProtocol.swift */; };
+		4FEA7AAD1EA15E06002C6D66 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEA7AAC1EA15E06002C6D66 /* DataStorage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -137,8 +139,8 @@
 		4500F2441CB5265200DE6F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4500F2491CB5265200DE6F77 /* MSBandSensorServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MSBandSensorServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4500F25D1CB527F900DE6F77 /* Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Events.swift; path = ../PolarHRService/Events.swift; sourceTree = "<group>"; };
-		4500F25E1CB527F900DE6F77 /* HRVEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HRVEvents.swift; sourceTree = "<group>"; };
-		4500F25F1CB527F900DE6F77 /* HRVService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HRVService.swift; sourceTree = "<group>"; };
+		4500F25E1CB527F900DE6F77 /* PolarHREvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolarHREvents.swift; sourceTree = "<group>"; };
+		4500F25F1CB527F900DE6F77 /* PolarHRService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolarHRService.swift; sourceTree = "<group>"; };
 		4500F2601CB527F900DE6F77 /* PeriphalEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeriphalEvents.swift; path = ../PolarHRService/PeriphalEvents.swift; sourceTree = "<group>"; };
 		4500F26A1CB6988600DE6F77 /* MicrosoftBandKit_iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MicrosoftBandKit_iOS.framework; path = MSBandSensorService/MicrosoftBandKit_iOS.framework; sourceTree = "<group>"; };
 		4500F26C1CB698C700DE6F77 /* MSBSensorService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSBSensorService.swift; sourceTree = "<group>"; };
@@ -166,6 +168,8 @@
 		46299F011D4A453F00DC640B /* app_icon80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = app_icon80.png; sourceTree = "<group>"; };
 		46299F021D4A453F00DC640B /* app_icon87.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = app_icon87.png; sourceTree = "<group>"; };
 		46299F031D4A453F00DC640B /* app_icon180.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = app_icon180.png; sourceTree = "<group>"; };
+		4F2E403B1EA38D8500B22BF7 /* SensorDataProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SensorDataProtocol.swift; sourceTree = "<group>"; };
+		4FEA7AAC1EA15E06002C6D66 /* DataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,8 +245,8 @@
 		4500F21F1CB5263200DE6F77 /* PolarHRService */ = {
 			isa = PBXGroup;
 			children = (
-				4500F25E1CB527F900DE6F77 /* HRVEvents.swift */,
-				4500F25F1CB527F900DE6F77 /* HRVService.swift */,
+				4500F25E1CB527F900DE6F77 /* PolarHREvents.swift */,
+				4500F25F1CB527F900DE6F77 /* PolarHRService.swift */,
 				4500F2201CB5263200DE6F77 /* PolarHRService.h */,
 				4500F2221CB5263200DE6F77 /* Info.plist */,
 			);
@@ -312,6 +316,8 @@
 				45E8A76C1CB82E0E00FB0080 /* SensorEvaluationShared.h */,
 				45E8A76E1CB82E0E00FB0080 /* Info.plist */,
 				450ECB841D00A0D500F5908A /* HRVHelpers.swift */,
+				4FEA7AAC1EA15E06002C6D66 /* DataStorage.swift */,
+				4F2E403B1EA38D8500B22BF7 /* SensorDataProtocol.swift */,
 			);
 			path = SensorEvaluationShared;
 			sourceTree = "<group>";
@@ -649,8 +655,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4500F2631CB527F900DE6F77 /* HRVService.swift in Sources */,
-				4500F2621CB527F900DE6F77 /* HRVEvents.swift in Sources */,
+				4500F2631CB527F900DE6F77 /* PolarHRService.swift in Sources */,
+				4500F2621CB527F900DE6F77 /* PolarHREvents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -708,8 +714,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				45E8A7881CB82E4A00FB0080 /* Events.swift in Sources */,
+				4F2E403C1EA38D8500B22BF7 /* SensorDataProtocol.swift in Sources */,
 				450ECB851D00A0D500F5908A /* HRVHelpers.swift in Sources */,
 				45E8A7871CB82E4200FB0080 /* PeriphalEvents.swift in Sources */,
+				4FEA7AAD1EA15E06002C6D66 /* DataStorage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1025,6 +1033,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = G6ZDR46H87;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MSbandEvaluation/Info.plist;
@@ -1041,6 +1050,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = G6ZDR46H87;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MSbandEvaluation/Info.plist;

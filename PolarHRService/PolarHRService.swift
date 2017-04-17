@@ -10,6 +10,7 @@ import Foundation
 import CoreBluetooth
 import QuartzCore
 import SensorEvaluationShared
+
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -98,7 +99,7 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
         set(val){
             if(_heartRate != val){
                 _heartRate = val
-                hrEvent.raise(withData: PolarEventData(type: PolarEventType.hrChanged, newValue: _heartRate))
+                hrEvent.raise(withData: PolarEventData(type: SensorDataType.hrChanged, newValue: _heartRate))
             }
         }
         get{
@@ -113,7 +114,7 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
         set(val){
             if(_rrInterval != val){
                 _rrInterval = val
-                hrEvent.raise(withData: PolarEventData(type: PolarEventType.rrChanged, newValue: _rrInterval))
+                hrEvent.raise(withData: PolarEventData(type: SensorDataType.rrChanged, newValue: _rrInterval))
             }
         }
         get{
@@ -137,7 +138,20 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
         //let services = [CBUUID(string: POLARH7_HRM_HEART_RATE_SERVICE_UUID), CBUUID(string: POLARH7_HRM_DEVICE_INFO_SERVICE_UUID)]
         //centralManager.scanForPeripheralsWithServices(services, options: nil)
         isConnecting = true
-        centralManager.scanForPeripherals(withServices: nil, options: nil)
+        
+        let serviceUUIDs:[AnyObject] = [CBUUID(string: "180D")]
+        let lastPeripherals = centralManager.retrieveConnectedPeripherals(withServices: serviceUUIDs as! [CBUUID])
+        
+        if lastPeripherals.count > 0{
+            let device = lastPeripherals.last! as CBPeripheral;
+            polarH7HRMPeripheral = device
+            centralManager.connect(polarH7HRMPeripheral!, options: nil)
+        }
+        else {
+        
+        
+            centralManager.scanForPeripherals(withServices: serviceUUIDs as! [CBUUID], options: nil)
+        }
     }
 
     // MARK: Public functions for event subscription
@@ -343,14 +357,18 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
         for i in 0 ... data!.count/2{
             str.append("\(reportData[i]) ")
         }
+        print(str)
         
         var offsetBits = 1
+        
+        // heart rate
         
         // check if hr data 8 bit or 16 bit
         if ((reportData[0] & 0x01) == 0) {          // 2
             // Retrieve the BPM value for the Heart Rate Monitor
             bpm = UInt16(reportData[offsetBits]);
             offsetBits += 1
+            print("8 bit")
         }
         else {
             // todo: test
@@ -358,7 +376,10 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
                 //UnsafePointer<UInt16>(reportData + offsetBits)[0]
             bpm = CFSwapInt16LittleToHost(bpm)
             offsetBits += 2
+            print("16 bit")
         }
+        
+        // rr intervall
         
         // check if energy expenditure data (16 bit)
         if((reportData[0] & 0x08) != 0){
@@ -367,15 +388,26 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
         
         // check if RR data present (16 bit)
         if ((reportData[0] & 0x16) != 0) {          // 2
-            rr = UInt16(reportData.advanced(by: offsetBits)[0])
+            
+            rr = UInt16(reportData[offsetBits+1]) << 8
+            rr =  rr | UInt16(reportData[offsetBits])
+            
+            
+            //rr = UInt16(reportData.advanced(by: offsetBits)[0])
                 //UnsafePointer<UInt16>(reportData + offsetBits)[0]
             rr = CFSwapInt16LittleToHost(rr)
+        }else{
+            print("no rr")
         }
         
         // Display the heart rate value to the UI if no error occurred
         if(error == nil) {   // 4
             self.heartRate = Int16(bpm)
-            self.rrInterval = Int16(rr)
+            
+            var rrNum = Double(rr)
+            
+            
+            self.rrInterval = Int16(rrNum * (1000.0/1024.0))
         }
     }
     

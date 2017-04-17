@@ -113,7 +113,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // RR
             do{
                 try client.sensorManager.startRRIntervalUpdates(to: nil, withHandler: { (rrData: MSBSensorRRIntervalData?, error: Error?) in
-                    let eventData : MSBEventData = MSBEventData1D(type: MSBEventType.rrChanged, newValue: rrData!.interval)
+                    let eventData : MSBEventData = MSBEventData1D(type: SensorDataType.rrChanged, newValue: (rrData!.interval*1000))
                     self.msbEvent.raise(withData: eventData)
                 })
             } catch let error as NSError {
@@ -123,7 +123,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // HR
             do {
                 try client.sensorManager.startHeartRateUpdates(to: nil, withHandler: { (heartRateData: MSBSensorHeartRateData?, error: Error?) in
-                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.hrChanged, newValue: Double(heartRateData!.heartRate)))
+                    self.msbEvent.raise(withData: MSBEventData1D(type: SensorDataType.hrChanged, newValue: Double(heartRateData!.heartRate)))
                 })
             } catch let error as NSError {
                 print("startHeartRateUpdatesToQueue failed: \(error.description)")
@@ -132,7 +132,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // GSR
             do{
                 try client.sensorManager.startGSRUpdates(to: nil, withHandler: { (gsrData: MSBSensorGSRData?, error: Error?) in
-                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.gsrChanged, newValue: Double(gsrData!.resistance)))
+                    self.msbEvent.raise(withData: MSBEventData1D(type: SensorDataType.gsrChanged, newValue: Double(gsrData!.resistance)))
                 })
             } catch let error as NSError {
                 print("startGSRUpdatesToQueue failed: \(error.description)")
@@ -141,7 +141,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // Accelerometer
             do{
                 try client.sensorManager.startAccelerometerUpdates(to: nil, withHandler: { (accelerometerData: MSBSensorAccelerometerData?, error: Error?) in
-                    self.msbEvent.raise(withData: MSBEventDataMD(type: MSBEventType.accelerometerChanged, newValues: [Double(accelerometerData!.x), Double(accelerometerData!.y), Double(accelerometerData!.z)]))
+                    self.msbEvent.raise(withData: MSBEventDataMD(type: SensorDataType.accelerometerChanged, newValues: [Double(accelerometerData!.x), Double(accelerometerData!.y), Double(accelerometerData!.z)]))
                 })
             } catch let error as NSError {
                 print("startAccelerometerUpdatesToQueue failed: \(error.description)")
@@ -150,7 +150,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // Skin Temp 
             do{
                 try client.sensorManager.startSkinTempUpdates(to: nil, withHandler: { (skinTempData: MSBSensorSkinTemperatureData?, error: Error?) in
-                    self.msbEvent.raise(withData: MSBEventDataMD(type: MSBEventType.skinTemperatureChanged, newValues: [Double(skinTempData!.temperature)]))
+                    self.msbEvent.raise(withData: MSBEventDataMD(type: SensorDataType.skinTemperatureChanged, newValues: [Double(skinTempData!.temperature)]))
                 })
             } catch let error as NSError {
                 print("startAccelerometerUpdatesToQueue failed: \(error.description)")
@@ -160,7 +160,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // Gyroscope
             do{
                 try client.sensorManager.startGyroscopeUpdates(to: nil, withHandler: { (gyroscopeData: MSBSensorGyroscopeData?, error: Error?) in
-                    self.msbEvent.raise(withData: MSBEventDataMD(type: MSBEventType.gyroscopeChanged, newValues: [Double(gyroscopeData!.x), Double(gyroscopeData!.y), Double(gyroscopeData!.z)]))
+                    self.msbEvent.raise(withData: MSBEventDataMD(type: SensorDataType.gyroscopeChanged, newValues: [Double(gyroscopeData!.x), Double(gyroscopeData!.y), Double(gyroscopeData!.z)]))
                 })
             } catch let error as NSError {
                 print("startGyroscopeUpdatesToQueue failed: \(error.description)")
@@ -169,7 +169,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // altimeter
             do{
                 try client.sensorManager.startAltimeterUpdates(to: nil, withHandler: { (altimeterData: MSBSensorAltimeterData?, error: Error?) in
-                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.altimeterChanged, newValue: Double(altimeterData!.rate)))
+                    self.msbEvent.raise(withData: MSBEventData1D(type: SensorDataType.altimeterChanged, newValue: Double(altimeterData!.rate)))
                 })
             } catch let error as NSError {
                 print("startAltimeterUpdatesToQueue failed: \(error.description)")
@@ -178,7 +178,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // ambient light
             do{
                 try client.sensorManager.startAmbientLightUpdates(to: nil, withHandler: { (lightData: MSBSensorAmbientLightData?, error: Error?) in
-                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.ambientLightChanged, newValue: Double(lightData!.brightness)))
+                    self.msbEvent.raise(withData: MSBEventData1D(type: SensorDataType.ambientLightChanged, newValue: Double(lightData!.brightness)))
                 })
             } catch let error as NSError {
                 print("startAltimeterUpdatesToQueue failed: \(error.description)")
@@ -187,8 +187,8 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
             // ambient barometer
             do{
                 try client.sensorManager.startBarometerUpdates(to: nil, withHandler: { (barometerData: MSBSensorBarometerData?, error: Error?) in
-                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.ambientTemperatureChanged, newValue: Double(barometerData!.temperature)))
-                    self.msbEvent.raise(withData: MSBEventData1D(type: MSBEventType.ambientPressureChanged, newValue: Double(barometerData!.airPressure)))
+                    self.msbEvent.raise(withData: MSBEventData1D(type: SensorDataType.ambientTemperatureChanged, newValue: Double(barometerData!.temperature)))
+                    self.msbEvent.raise(withData: MSBEventData1D(type: SensorDataType.ambientPressureChanged, newValue: Double(barometerData!.airPressure)))
                 })
             } catch let error as NSError {
                 print("startAltimeterUpdatesToQueue failed: \(error.description)")

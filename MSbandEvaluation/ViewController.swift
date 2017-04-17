@@ -357,7 +357,7 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
     
     public func handleEvent(withData data: MSBEventData) {
         
-        switch data.type{
+        switch data.sensorDataType{
         case .hrChanged:
             msbHROutputTextB.text = data.printData()
         case .rrChanged:
@@ -368,21 +368,23 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
         }
         
         if(recordData){
-            DataStorage.sharedInstance.append(msbData: data)
+            DataStorage.sharedInstance.append(data: data)
         }
         
     }
     
     public func handleEvent(withData data: PolarEventData) {
-        switch data.type{
+        switch data.sensorDataType{
         case .hrChanged:
             polarHROutputTextB.text = data.newValue?.description
         case .rrChanged:
             polarRROutputTextB.text = data.newValue?.description
+        default:
+            print("invalid polar data: \(data.sensorDataType)")
         }
         
         if(recordData){
-            DataStorage.sharedInstance.append(polarData: data)
+            DataStorage.sharedInstance.append(data: data)
         }
     }
 }

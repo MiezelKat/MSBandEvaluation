@@ -7,16 +7,7 @@
 //
 
 import Foundation
-
-//
-//  HRVEvents.swift
-//  HRVCore
-//
-//  Created by Katrin Hansel on 21/12/2015.
-//  Copyright © 2015 Katrin Hansel. All rights reserved.
-//
-
-import Foundation
+import SensorEvaluationShared
 
 /**
  *  Interface for handling HR events
@@ -32,29 +23,48 @@ public protocol MSBEventHandler{
     
 }
 
-public protocol MSBEventData{
-    /// Type of event
-    var type : MSBEventType{
-        get
-    }
+public protocol MSBEventData : SensorData{
+//    /// Type of event
+//    var type : MSBEventType{
+//        get
+//    }
     /// Timestamp of new data
     var timestamp : Date{
         get
     }
     
     func printData() -> String
+    
+    
 }
 
 /**
  *  HR Event Data containing new hr data and timestamp
  */
 public struct MSBEventData1D : MSBEventData{
-    /// Type of event
-    public fileprivate(set) var type : MSBEventType
+//    /// Type of event
+//    public fileprivate(set) var type : MSBEventType
+    
     /// Timestamp of new data
     public fileprivate(set) var timestamp : Date
     /// new hr or rr value
     public fileprivate(set) var newValue : Double?
+    
+    public var sensorSource : SensorSourceType{
+        return SensorSourceType.msb
+    }
+    
+    private var _sensorDataType : SensorDataType
+    public var sensorDataType : SensorDataType{
+        return _sensorDataType
+    }
+    
+    
+    public var csvString : String{
+        get{
+            return "\(timestamp),\(timestamp.timeIntervalSince1970),\(newValue)\n"
+        }
+    }
     
     /**
      Create new event data
@@ -65,8 +75,8 @@ public struct MSBEventData1D : MSBEventData{
      
      - returns: new data object
      */
-    public init(type: MSBEventType, newValue: Double?, timestamp : Date = Date()){
-        self.type = type
+    public init(type: SensorDataType, newValue: Double?, timestamp : Date = Date()){
+        self._sensorDataType = type
         self.newValue = newValue
         self.timestamp = timestamp
     }
@@ -84,12 +94,39 @@ public struct MSBEventData1D : MSBEventData{
  *  HR Event Data containing new hr data and timestamp
  */
 public struct MSBEventDataMD : MSBEventData{
-    /// Type of event
-    public fileprivate(set) var type : MSBEventType
+
     /// new hr or rr value
     public fileprivate(set) var newValues : [Double]?
     /// Timestamp of new data
     public fileprivate(set) var timestamp : Date
+    
+    public var sensorSource : SensorSourceType{
+        return SensorSourceType.msb
+    }
+    
+    private var _sensorDataType : SensorDataType
+    public var sensorDataType : SensorDataType{
+        return _sensorDataType
+    }
+    
+//    public static func csvHeader(forType type : SensorDataType) -> String{
+//            switch type {
+//            case .accelerometerChanged:
+//                return "date,ts,x,y,z\n"
+//            case .altimeterChanged:
+//                return "date,ts,xAlti,yAlti,zAlti\n"
+//            case .gyroscopeChanged:
+//                return "date,ts,x,y,z\n"
+//            default:
+//                return "invalid"
+//            }
+//    }
+//    
+    public var csvString : String{
+        get{
+            return "\(timestamp),\(timestamp.timeIntervalSince1970),\(printData())\n"
+        }
+    }
     
     /**
      Create new event data
@@ -100,8 +137,8 @@ public struct MSBEventDataMD : MSBEventData{
      
      - returns: new data object
      */
-    public init(type: MSBEventType, newValues: [Double]?, timestamp : Date = Date()){
-        self.type = type
+    public init(type: SensorDataType, newValues: [Double]?, timestamp : Date = Date()){
+        self._sensorDataType = type
         self.newValues = newValues
         self.timestamp = timestamp
     }
@@ -127,22 +164,22 @@ public struct MSBEventDataMD : MSBEventData{
     }
 }
 
-/**
- MSB Event Types
- 
- - hrChanged: heart rate data available
- - rrChanged: rr data available
- - gsrChanged: GSR data available
- */
-public enum MSBEventType{
-    case hrChanged
-    case rrChanged
-    case gsrChanged
-    case accelerometerChanged
-    case skinTemperatureChanged
-    case gyroscopeChanged
-    case ambientTemperatureChanged
-    case ambientPressureChanged
-    case ambientLightChanged
-    case altimeterChanged
-}
+///**
+// MSB Event Types
+// 
+// - hrChanged: heart rate data available
+// - rrChanged: rr data available
+// - gsrChanged: GSR data available
+// */
+//public enum MSBEventType{
+//    case hrChanged
+//    case rrChanged
+//    case gsrChanged
+//    case accelerometerChanged
+//    case skinTemperatureChanged
+//    case gyroscopeChanged
+//    case ambientTemperatureChanged
+//    case ambientPressureChanged
+//    case ambientLightChanged
+//    case altimeterChanged
+//}
