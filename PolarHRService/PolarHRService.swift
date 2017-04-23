@@ -148,8 +148,6 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
             centralManager.connect(polarH7HRMPeripheral!, options: nil)
         }
         else {
-        
-        
             centralManager.scanForPeripherals(withServices: serviceUUIDs as! [CBUUID], options: nil)
         }
     }

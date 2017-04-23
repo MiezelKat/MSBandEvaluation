@@ -44,6 +44,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
         }
     }
     
+    
     // MARK: Public functions for event subscription
     
     /**
@@ -63,7 +64,7 @@ public  class MSBService : NSObject, MSBClientManagerDelegate{
     open func subscribe(periphalEventHandler handler: PeriphalEventHandler){
         periphalEvent.add(handler: {e in handler.handleEvent(withData:e)} )
     }
-
+    
     
     // MARK - MSBClientManagerDelegate
     

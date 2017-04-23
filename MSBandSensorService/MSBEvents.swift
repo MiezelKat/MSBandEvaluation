@@ -35,7 +35,7 @@ public protocol MSBEventData : SensorData{
     
     func printData() -> String
     
-    
+    func getOnePointPrint() -> String
 }
 
 /**
@@ -87,6 +87,10 @@ public struct MSBEventData1D : MSBEventData{
         }else{
             return " "
         }
+    }
+    
+    public func getOnePointPrint() -> String{
+        return printData()
     }
 }
 
@@ -144,7 +148,7 @@ public struct MSBEventDataMD : MSBEventData{
     }
     
     public func printData() -> String{
-        var retVal = " "
+        var retVal = ""
         
         if(newValues == nil){
             return retVal
@@ -161,6 +165,17 @@ public struct MSBEventDataMD : MSBEventData{
         }
         
         return retVal
+    }
+    
+    public func getOnePointPrint() -> String{
+        var retVal = ""
+        
+        if(newValues == nil){
+            return retVal
+        }
+        
+        return newValues!.last!.description
+        
     }
 }
 

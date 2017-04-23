@@ -32,11 +32,24 @@ public class DataStorage : NSObject{
         polarDataPoints.removeAll()
         msbDataPoints.removeAll()
         startTS = nil
+        recordDir = nil
     }
     
     var batch = 0
-    
     var lastSaved : Date
+    var recordDir : String? = nil
+    
+    public func startRecording(inDirectory dir: String? = nil){
+        startTS = Date().timeIntervalSince1970
+        lastSaved = Date()
+        recordDir = dir
+    }
+    
+    public func stopRecording(){
+        writeToDisk(batchNo: batch)
+        reset()
+    }
+    
     
     public func append(data data : SensorData){
         if(startTS == nil)
@@ -58,7 +71,8 @@ public class DataStorage : NSObject{
         
 
         if(nextTransmission.compare(Date()) == .orderedAscending){
-            writeToDisk(batchNo: 0)
+            writeToDisk(batchNo: batch)
+            batch = batch + 1
             polarDataPoints.removeAll()
             msbDataPoints.removeAll()
         }
@@ -73,7 +87,8 @@ public class DataStorage : NSObject{
         let now = Date()
         
         let documentsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
-        let dataPath = documentsPath.appendingPathComponent("record-\(now.description)")
+        let dir = recordDir != nil ? recordDir! : "record-\(now.description)"
+        let dataPath = documentsPath.appendingPathComponent(dir)
         do {
             try FileManager.default.createDirectory(atPath: dataPath.path, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
@@ -245,42 +260,5 @@ public class DataStorage : NSObject{
         return documentsDirectory as NSString
     }
     
-    public func getDataSamplesList() -> [String]{
-        var directories : [NSString?]
-        var directoryUrls : [URL]?
-        
-        var returnStrs = [String]()
-        
-        do {
-            directoryUrls = try FileManager.default.contentsOfDirectory(at: URL(fileURLWithPath: getDocumentsDirectory() as String), includingPropertiesForKeys: nil, options: FileManager.DirectoryEnumerationOptions())
-            
-            print(directoryUrls)
-            
-            
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        if(directoryUrls != nil){
-            //mp3Files = directoryUrls!.filter{x in (x.lastPathComponent?.containsString("polarRR"))!}.map{x in x.lastPathComponent! as NSString }
-            
-            let f = directoryUrls!.map{x in x.absoluteString as NSString}
-            
-            let d = directoryUrls!.filter{x in (x.hasDirectoryPath)}.map{x in x.absoluteString as NSString}
-            
-            directories = d
-            
-            print("MP3 FILES:\n" + directories.description)
-            
-            for s in directories{
-                let split1 = s!.substring(to: s!.length - 1 - 4) as NSString
-                let split2 = split1.substring(from: 7)
-                
-                returnStrs.append(split2)
-                
-            }
-        }
-        
-        return returnStrs
-    }
-    
+       
 }

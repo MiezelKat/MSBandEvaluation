@@ -264,7 +264,7 @@ class ViewController: UITableViewController, PeriphalEventHandler, MSBEventHandl
     
     @IBAction func stopRecodingBtnEvent(_ sender: AnyObject) {
         recordData = false
-        DataStorage.sharedInstance.writeToDisk()
+        DataStorage.sharedInstance.writeToDisk(batchNo: 1)
         DataStorage.sharedInstance.reset()
         timer.invalidate()
     }

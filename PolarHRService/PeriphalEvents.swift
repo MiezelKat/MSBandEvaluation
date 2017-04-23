@@ -48,7 +48,7 @@ public struct PeriphalChangedEventData{
  - isDisconnected: strap is disconnected
   - failedConnecting: strap is disconnected
  */
-public enum PeriphalStatus{
+public enum PeriphalStatus : String{
     case discovering
     case isConnecting
     case isConnected
@@ -56,7 +56,7 @@ public enum PeriphalStatus{
     case failedConnecting
 }
 
-public enum PeriphalSourceType{
+public enum PeriphalSourceType : String{
     case polarStrap
     case microsoftBand
 }
