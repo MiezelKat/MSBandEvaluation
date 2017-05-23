@@ -31,6 +31,7 @@ public class DataStorage : NSObject{
     public func reset(){
         polarDataPoints.removeAll()
         msbDataPoints.removeAll()
+        markerTimestamps.removeAll()
         startTS = nil
         recordDir = nil
     }
@@ -46,7 +47,7 @@ public class DataStorage : NSObject{
     }
     
     public func stopRecording(){
-        writeToDisk(batchNo: batch)
+        write(msbData: msbDataPoints, polarData: polarDataPoints, batchNo: batch)
         reset()
     }
     
@@ -67,14 +68,18 @@ public class DataStorage : NSObject{
     }
     
     func checkSaving(){
-        let nextTransmission = lastSaved.addingTimeInterval(60*5)
+        let nextTransmission = lastSaved.addingTimeInterval(60)
         
-
         if(nextTransmission.compare(Date()) == .orderedAscending){
-            writeToDisk(batchNo: batch)
+            let msb = msbDataPoints
+            let polar = polarDataPoints
+            polarDataPoints.removeAll(keepingCapacity: true)
+            msbDataPoints.removeAll(keepingCapacity: true)
+            lastSaved = Date()
+            write(msbData: msb, polarData: polar, batchNo: batch)
+            
             batch = batch + 1
-            polarDataPoints.removeAll()
-            msbDataPoints.removeAll()
+            
         }
     }
     
@@ -83,34 +88,38 @@ public class DataStorage : NSObject{
         markerTimestamps.append(Date())
     }
     
-    public func writeToDisk(batchNo : Int){
+    public func write(msbData: [SensorData], polarData : [SensorData], batchNo : Int){
         let now = Date()
         
         let documentsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
         let dir = recordDir != nil ? recordDir! : "record-\(now.description)"
         let dataPath = documentsPath.appendingPathComponent(dir)
+        let polarDirPath = dataPath.appendingPathComponent("polar")
+        let msbDirPath = dataPath.appendingPathComponent("msb")
         do {
             try FileManager.default.createDirectory(atPath: dataPath.path, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: polarDirPath.path, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: msbDirPath.path, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
             NSLog("Unable to create directory \(error.debugDescription)")
         }
         
-        let polarRRURL = dataPath.appendingPathComponent("polarRR_\(batchNo).csv")
-        let polarHRURL = dataPath.appendingPathComponent("polarHR_\(batchNo).csv")
+        let polarRRURL = polarDirPath.appendingPathComponent("pRR_\(batchNo).csv")
+        let polarHRURL = polarDirPath.appendingPathComponent("pHR_\(batchNo).csv")
         
-        let msbRRURL = dataPath.appendingPathComponent("msbRR_\(batchNo).csv")
-        let msbHRURL = dataPath.appendingPathComponent("msbHR_\(batchNo).csv")
-        let msbGSRURL = dataPath.appendingPathComponent("msbGSR_\(batchNo).csv")
-        let msbSkinTempURL = dataPath.appendingPathComponent("msbSkinTemp_\(batchNo).csv")
+        let msbRRURL = msbDirPath.appendingPathComponent("mRR_\(batchNo).csv")
+        let msbHRURL = msbDirPath.appendingPathComponent("mHR_\(batchNo).csv")
+        let msbGSRURL = msbDirPath.appendingPathComponent("mGSR_\(batchNo).csv")
+        let msbSkinTempURL = msbDirPath.appendingPathComponent("mSkinTemp_\(batchNo).csv")
         
-        let msbAccelerometerURL = dataPath.appendingPathComponent("msbAccel_\(batchNo).csv")
-        let msbGyroscopeURL = dataPath.appendingPathComponent("msbGyro_\(batchNo).csv")
+        let msbAccelerometerURL = msbDirPath.appendingPathComponent("mAccel_\(batchNo).csv")
+        let msbGyroscopeURL = msbDirPath.appendingPathComponent("mGyro_\(batchNo).csv")
         
-        let msbAmbientTempURL = dataPath.appendingPathComponent("msbATemp_\(batchNo).csv")
-        let msbAmbientPressureURL = dataPath.appendingPathComponent("msbAPressure_\(batchNo).csv")
-        let msbAmbientLightURL = dataPath.appendingPathComponent("msbALight_\(batchNo).csv")
+        let msbAmbientTempURL = msbDirPath.appendingPathComponent("mATemp_\(batchNo).csv")
+        let msbAmbientPressureURL = msbDirPath.appendingPathComponent("mAPressure_\(batchNo).csv")
+        let msbAmbientLightURL = msbDirPath.appendingPathComponent("mALight_\(batchNo).csv")
         
-        let msbAltimeterURL = dataPath.appendingPathComponent("msbAlti_\(batchNo).csv")
+        let msbAltimeterURL = msbDirPath.appendingPathComponent("mAlti_\(batchNo).csv")
         
         let markerURL = dataPath.appendingPathComponent("markers_\(batchNo).csv")
         
@@ -118,7 +127,7 @@ public class DataStorage : NSObject{
         var polarHRData  = SensorDataHelper.csvHeader(forType: .hrChanged)
         
         
-        for dataP in polarDataPoints{
+        for dataP in polarData{
             if(dataP.sensorDataType == .rrChanged){
                 polarRRData.append(dataP.csvString)
                 
@@ -155,9 +164,9 @@ public class DataStorage : NSObject{
         var msbAmbientLightData = SensorDataHelper.csvHeader(forType: .ambientLightChanged)
         
         var msbAltimeterData = SensorDataHelper.csvHeader(forType: .altimeterChanged)
+
         
-        
-        for dataP in msbDataPoints{
+        for dataP in msbData{
             if(dataP.sensorDataType == .rrChanged){
                 msbRRData.append(dataP.csvString)
             }else if(dataP.sensorDataType == .hrChanged){
