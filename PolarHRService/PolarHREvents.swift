@@ -48,7 +48,7 @@ public struct PolarEventData : SensorData {
 
     public var csvString : String{
         get{
-            return "\(timestamp),\(timestamp.timeIntervalSince1970),\(newValue)\n"
+            return "\(timestamp),\(timestamp.timeIntervalSince1970),\(newValue!)\n"
         }
     }
     

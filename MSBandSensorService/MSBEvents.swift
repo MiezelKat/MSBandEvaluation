@@ -62,7 +62,7 @@ public struct MSBEventData1D : MSBEventData{
     
     public var csvString : String{
         get{
-            return "\(timestamp),\(timestamp.timeIntervalSince1970),\(newValue)\n"
+            return "\(timestamp),\(timestamp.timeIntervalSince1970),\(newValue!)\n"
         }
     }
     
