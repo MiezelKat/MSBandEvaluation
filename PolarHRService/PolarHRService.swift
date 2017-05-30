@@ -355,7 +355,7 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
         for i in 0 ... data!.count/2{
             str.append("\(reportData[i]) ")
         }
-        print(str)
+//        print(str)
         
         var offsetBits = 1
         
@@ -366,7 +366,7 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
             // Retrieve the BPM value for the Heart Rate Monitor
             bpm = UInt16(reportData[offsetBits]);
             offsetBits += 1
-            print("8 bit")
+//            print("8 bit")
         }
         else {
             // todo: test
@@ -374,7 +374,7 @@ open class PolarHRService : NSObject, CBCentralManagerDelegate, CBPeripheralDele
                 //UnsafePointer<UInt16>(reportData + offsetBits)[0]
             bpm = CFSwapInt16LittleToHost(bpm)
             offsetBits += 2
-            print("16 bit")
+//            print("16 bit")
         }
         
         // rr intervall

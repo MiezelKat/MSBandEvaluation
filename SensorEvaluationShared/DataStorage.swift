@@ -46,7 +46,11 @@ public class DataStorage : NSObject{
     }
     
     public func stopRecording(){
-        writeToDisk(batchNo: batch)
+        let msb = msbDataPoints
+        let polar = polarDataPoints
+       
+        writeToDisk(polar: polar, msb: msb, batchNo: batch)
+
         reset()
     }
     
@@ -71,10 +75,16 @@ public class DataStorage : NSObject{
         
 
         if(nextTransmission.compare(Date()) == .orderedAscending){
-            writeToDisk(batchNo: batch)
+            let msb = msbDataPoints
+            let polar = polarDataPoints
+            polarDataPoints.removeAll(keepingCapacity: true)
+            msbDataPoints.removeAll(keepingCapacity: true)
+
+            
+            writeToDisk(polar: polar, msb: msb, batchNo: batch)
             batch = batch + 1
-            polarDataPoints.removeAll()
-            msbDataPoints.removeAll()
+//            polarDataPoints.removeAll()
+//            msbDataPoints.removeAll()
         }
     }
     
@@ -83,7 +93,7 @@ public class DataStorage : NSObject{
         markerTimestamps.append(Date())
     }
     
-    public func writeToDisk(batchNo : Int){
+    public func writeToDisk(polar: [SensorData], msb: [SensorData], batchNo : Int){
         let now = Date()
         
         let documentsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
@@ -114,6 +124,8 @@ public class DataStorage : NSObject{
         
         let markerURL = dataPath.appendingPathComponent("markers_\(batchNo).csv")
         
+        print("created URLS")
+        
         var polarRRData  = SensorDataHelper.csvHeader(forType: .rrChanged)
         var polarHRData  = SensorDataHelper.csvHeader(forType: .hrChanged)
         
@@ -129,15 +141,18 @@ public class DataStorage : NSObject{
                 //polarHRData.append("\(dataP.timestamp.description),\(dataP.timestamp.timeIntervalSince1970),\(dataP.timestamp.timeIntervalSince1970-startTS!),\(dataP.newValue!.description)\n")
             }
         }
+        print("appended polar")
         
         do{
             try polarRRData.write(to: polarRRURL, atomically: true, encoding: String.Encoding.utf8)
+            print("wrote polar to \(polarRRURL)")
         }catch let error as NSError{
             print(error.description)
         }
         
         do{
             try polarHRData.write(to: polarHRURL, atomically: true, encoding: String.Encoding.utf8)
+            print("wrote polar to \(polarRRURL)")
         }catch let error as NSError{
             print(error.description)
         }
